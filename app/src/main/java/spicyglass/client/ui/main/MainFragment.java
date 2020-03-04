@@ -32,6 +32,7 @@ public class MainFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         // TODO: Use the ViewModel
+        //TODO: Hello world connection could probably be started here
     }
 
 }
