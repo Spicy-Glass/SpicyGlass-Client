@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
 import spicyglass.client.R;
+import spicyglass.client.integration.SGLogger;
 
 public class MainFragment extends Fragment {
 
@@ -32,6 +33,8 @@ public class MainFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         // TODO: Use the ViewModel
+        SGLogger.info("Spicy Glass Activity Created!");
+        //TODO: Hello world connection could probably be started here
     }
 
 }
