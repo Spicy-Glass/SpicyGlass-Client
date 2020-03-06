@@ -1,14 +1,18 @@
-package spicyglass.client.integration;
+package spicyglass.client.integration.system
 
-import java.util.logging.Logger;
+import java.util.logging.Logger
 
-public final class SGLogger {
-    private static Logger LOGGER = null;
-    private static Logger getLogger() {
-        if(LOGGER == null)
-            LOGGER = Logger.getLogger("Spicy Glass");
-        return LOGGER;
-    }
+/**
+ * A simple class to easily handle logging.
+ */
+object SGLogger {
+    private var LOGGER: Logger? = null
+    private val logger: Logger
+        get() {
+            if (LOGGER == null)
+                LOGGER = Logger.getLogger("Spicy Glass")
+            return LOGGER!!
+        }
 
     /**
      * Print info to the log.
@@ -17,8 +21,9 @@ public final class SGLogger {
      * @param args
      * Values to replace the placeholders in the string with
      */
-    public static void info(String string, Object... args) {
-        getLogger().info(String.format(string, args));
+    @JvmStatic
+    fun info(string: String, vararg args: Any) {
+        logger.info(String.format(string, *args))
     }
 
     /**
@@ -28,8 +33,9 @@ public final class SGLogger {
      * @param args
      * Values to replace the placeholders in the string with
      */
-    public static void warn(String string, Object... args) {
-        getLogger().warning(String.format(string, args));
+    @JvmStatic
+    fun warn(string: String, vararg args: Any) {
+        logger.warning(String.format(string, *args))
     }
 
     /**
@@ -39,7 +45,8 @@ public final class SGLogger {
      * @param args
      * Values to replace the placeholders in the string with
      */
-    public static void error(String string, Object... args) {
-        getLogger().severe(String.format(string, args));
+    @JvmStatic
+    fun error(string: String, vararg args: Any) {
+        logger.severe(String.format(string, *args))
     }
 }

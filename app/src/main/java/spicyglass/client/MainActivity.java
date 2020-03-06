@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import spicyglass.client.integration.system.SGLogger;
 import spicyglass.client.ui.main.MainFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -17,5 +18,6 @@ public class MainActivity extends AppCompatActivity {
                     .replace(R.id.container, MainFragment.newInstance())
                     .commitNow();
         }
+        SGLogger.info("Spicy Glass Activity Created!");
     }
 }
