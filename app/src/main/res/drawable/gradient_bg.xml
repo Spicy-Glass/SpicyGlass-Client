@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- this allows to create a gradiant for the background. It has a start and an end and the colors
+are blue to white -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     android:shape="rectangle"
     <gradient
