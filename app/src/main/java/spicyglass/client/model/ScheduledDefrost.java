@@ -1,6 +1,6 @@
 package spicyglass.client.model;
 
-import spicyglass.client.integration.SGLogger;
+import spicyglass.client.integration.system.SGLogger;
 
 public class ScheduledDefrost {
     private long time;

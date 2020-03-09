@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Spicy Glass</string>
     <string name="message"> Vaso Picante Con Amigos</string>
+    <string name="link_your_device">Link Your Device</string>
 </resources>
