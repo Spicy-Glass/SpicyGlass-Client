@@ -7,6 +7,7 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import spicyglass.client.integration.system.HelloWorld;
 import spicyglass.client.ui.screens.SettingActivity;
 
 
@@ -32,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
                     openSettings();
                 }
             });
+
+            HelloWorld.helloWorld();
         }
         public void openSettings(){
             Intent intent = new Intent (this, SettingActivity.class);
