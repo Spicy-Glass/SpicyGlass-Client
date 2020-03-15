@@ -3,6 +3,9 @@
     package="spicyglass.client">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA"/>
+
+
 
     <application
         android:allowBackup="true"
@@ -19,6 +22,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
         <activity android:name=".MainActivity"/>
         <activity android:name=".ui.screens.SettingActivity"/>
         <activity android:name=".ui.screens.DiagnosisActivity"/>
@@ -26,6 +31,12 @@
         <activity android:name=".ui.screens.SeatActivity"/>
         <activity android:name=".ui.screens.LockerActivity"/>
         <activity android:name=".ui.screens.AutoActivity"/>
+
+        <activity android:name=".ui.screens.diagnosis.FuelActivity"/>
+        <activity android:name=".ui.screens.diagnosis.TiresActivity"/>
+        <activity android:name=".ui.screens.diagnosis.MCodeActivity"/>
+        <activity android:name=".ui.screens.diagnosis.CameraActivity"/>
+
 
     </application>
 

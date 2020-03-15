@@ -7,7 +7,6 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import spicyglass.client.integration.system.HelloWorld;
 import spicyglass.client.ui.screens.AutoActivity;
 import spicyglass.client.ui.screens.DefrostActivity;
 import spicyglass.client.ui.screens.DiagnosisActivity;
@@ -18,7 +17,7 @@ import spicyglass.client.ui.screens.SettingActivity;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button button1, button2, button3, button4, button5, button6;
+    private Button button1, button2, button3, button4, button5, button6, button7;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,8 +74,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 intent = new Intent(this, AutoActivity.class);
                 startActivity(intent);
                 break;
+                
         }
-            HelloWorld.helloWorld();
+            //HelloWorld.helloWorld();
     }
 }
 
