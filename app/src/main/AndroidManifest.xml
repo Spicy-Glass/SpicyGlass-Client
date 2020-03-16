@@ -37,6 +37,9 @@
         <activity android:name=".ui.screens.diagnosis.MCodeActivity"/>
         <activity android:name=".ui.screens.diagnosis.CameraActivity"/>
 
+        <activity android:name=".ui.screens.settings.VehicleActivity"/>
+        <activity android:name=".ui.screens.settings.VehLogActivity"/>
+
 
     </application>
 

@@ -11,8 +11,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class LoginActivity extends AppCompatActivity {
+    public static final String PREFS_NAME = "LoginPrefs";
     Button login;
-    SharedPreferences sp;
+
 
     @Override
     protected void onCreate(Bundle SavedInstanceSTate){
@@ -23,13 +24,22 @@ public class LoginActivity extends AppCompatActivity {
         EditText username = (EditText) findViewById(R.id.Email);
         EditText password = (EditText) findViewById(R.id.Password);
 
-        sp = getSharedPreferences("login", MODE_PRIVATE);
+        SharedPreferences login_info = getSharedPreferences("logged", 0);
 
+
+        if (login_info.getString("logged","").toString().equals("logged")){
+            Intent i = new Intent(this, MainActivity.class);
+            startActivity(i);
+        }
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) { //within the on click if login info is correct then you apply these if not give error msg
                 if(username.getText().toString().equals("spicy@ttu.edu") && password.getText().toString().equals("glass")){
+                    SharedPreferences login_info = getSharedPreferences(PREFS_NAME, 0);
+                    SharedPreferences.Editor editor = login_info.edit();
+                    editor.putString("logged","logged");
+                    editor.apply();
                     LoginActivity.this.SwitchMainActivity();
                 }
                 else{
