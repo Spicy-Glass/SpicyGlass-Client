@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import spicyglass.client.R;
 
-public class AutoActivity extends AppCompatActivity {
+public class AutoStartActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

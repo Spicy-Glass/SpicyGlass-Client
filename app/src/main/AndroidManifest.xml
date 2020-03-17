@@ -30,7 +30,7 @@
         <activity android:name=".ui.screens.DefrostActivity"/>
         <activity android:name=".ui.screens.SeatActivity"/>
         <activity android:name=".ui.screens.LockerActivity"/>
-        <activity android:name=".ui.screens.AutoActivity"/>
+        <activity android:name=".ui.screens.AutoStartActivity"/>
 
         <activity android:name=".ui.screens.diagnosis.FuelActivity"/>
         <activity android:name=".ui.screens.diagnosis.TiresActivity"/>

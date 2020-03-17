@@ -7,7 +7,7 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import spicyglass.client.ui.screens.AutoActivity;
+import spicyglass.client.ui.screens.AutoStartActivity;
 import spicyglass.client.ui.screens.DefrostActivity;
 import spicyglass.client.ui.screens.DiagnosisActivity;
 import spicyglass.client.ui.screens.LockerActivity;
@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.Auto:
-                intent = new Intent(this, AutoActivity.class);
+                intent = new Intent(this, AutoStartActivity.class);
                 startActivity(intent);
                 break;
                 

@@ -8,4 +8,6 @@
     <color name="Background_start">#00ABFF</color> <!--This is the light blue -->
     <color name="Round_Button">#55A5DA</color> <!-- this is the darker teal -->
     <color name="Background_end">#FFFFFF</color> <!-- this is the white -->
+    <color name="Red">#db1f18</color>
+    <color name="transparent">#0000</color>
 </resources>

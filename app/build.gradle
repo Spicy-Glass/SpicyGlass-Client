@@ -7,13 +7,14 @@ android {
     buildToolsVersion "29.0.3"
 
     defaultConfig {
+
         applicationId "spicyglass.client"
         minSdkVersion 16
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true /* This line changes the icon pictured idk why*/
     }
 
     buildTypes {
@@ -41,6 +42,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.0.0'
     implementation "androidx.core:core-ktx:+"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.0.0"
+
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     configurations {
         cleanedAnnotations
