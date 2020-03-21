@@ -10,6 +10,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import spicyglass.client.integration.system.HelloWorld;
+
 public class LoginActivity extends AppCompatActivity {
     public static final String PREFS_NAME = "LoginPrefs";
     Button login;
@@ -41,6 +43,7 @@ public class LoginActivity extends AppCompatActivity {
                     editor.putString("logged","logged");
                     editor.apply();
                     LoginActivity.this.SwitchMainActivity();
+                    HelloWorld.helloWorld();
                 //}
                 //else{
                     Toast.makeText(getApplicationContext(), "Stop Trying To Hack Someone!", Toast.LENGTH_SHORT).show();

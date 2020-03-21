@@ -59,7 +59,7 @@ object SpicyApiTalker {
             if(ret == null)
                 response = lastResponse
         }).start()
-        //TODO loading wheel or something while waiting on response?
+        //TODO loading wheel or something while waiting on response? App will probably go into App Not Responding if this takes too long, there is probably a better way
         while(ret == null && response == null) {
             Thread.sleep(20)
         }
