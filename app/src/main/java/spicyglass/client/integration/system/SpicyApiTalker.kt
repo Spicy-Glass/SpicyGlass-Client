@@ -60,6 +60,7 @@ object SpicyApiTalker {
                 response = lastResponse
         }).start()
         //TODO loading wheel or something while waiting on response? App will probably go into App Not Responding if this takes too long, there is probably a better way
+        //TODO potentially just pass in a function that gets called when a response is determined, and possibly, none of the functions in this class get called from the main thread and whatever uses them has to do the loading wheel+wait for response
         while(ret == null && response == null) {
             Thread.sleep(20)
         }
