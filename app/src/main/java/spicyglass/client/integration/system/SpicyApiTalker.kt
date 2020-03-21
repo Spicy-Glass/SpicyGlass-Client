@@ -6,6 +6,12 @@ import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 
+/**
+ * Do not call this class's functions from the main thread! Use:
+ * Java: new Thread(r -> { CODE }).start();
+ * Kotlin: Thread(Runnable { CODE }).start()
+ * This does not handle the loading wheel or whatever the UI needs to do to indicate that it is connecting to the internet and retrieving data.
+ */
 object SpicyApiTalker {
     private const val apiUrl = "https://deployment-test-5tfsskgkda-uc.a.run.app/"
     //GET requests
@@ -21,50 +27,32 @@ object SpicyApiTalker {
     @JvmStatic
     private fun makeRequest(endpoint: String, vararg keyValuePostArgs: Pair<String, String>): JSONObject? {
         var ret: JSONObject? = null
-        var response: String? = null
-        //Start the communication on a new thread, because it should not be done on the main thread
-        Thread(Runnable() {
-            var attempts = 0
-            var lastResponse = ""
-            //We're going to make a few attempts to get a valid response if needed, in case a packet was dropped or whatever
-            while(ret == null && attempts++ < 3) {
-                val con = URL(apiUrl + endpoint).openConnection() as HttpURLConnection
-                con.setRequestProperty("Content-Type", "application/json")
-                //GET_FULL_DB is the only one that uses GET at the moment
-                con.requestMethod = if(endpoint == GET_FULL_DB) "GET" else "POST"
-                for(pair: Pair<String, String> in keyValuePostArgs)
-                    con.setRequestProperty(pair.first, pair.second)
+        val con = URL(apiUrl + endpoint).openConnection() as HttpURLConnection
+        con.setRequestProperty("Content-Type", "application/json")
+        //GET_FULL_DB is the only one that uses GET at the moment
+        con.requestMethod = if(endpoint == GET_FULL_DB) "GET" else "POST"
+        for(pair: Pair<String, String> in keyValuePostArgs)
+            con.setRequestProperty(pair.first, pair.second)
 
-                val responseCode = con.responseCode
-                //HTTP Response code 200 means OK
-                if (responseCode == 200) {
-                    val br = BufferedReader(InputStreamReader(con.inputStream))
-                    var inputLine: String?
-                    val content = StringBuffer()
-                    while (true) {
-                        inputLine = br.readLine()
-                        if (inputLine == null)
-                            break;
-                        content.append(inputLine)
-                    }
-                    br.close()
-                    con.disconnect()
-                    ret = JSONObject(content.toString())
-                } else {//Other response codes mean something went wrong
-                    SGLogger.info("Response was %s", responseCode)
-                    lastResponse = responseCode.toString()
-                }
+        val responseCode = con.responseCode
+        //HTTP Response code 200 means OK
+        if (responseCode == 200) {
+            val br = BufferedReader(InputStreamReader(con.inputStream))
+            var inputLine: String?
+            val content = StringBuffer()
+            while (true) {
+                inputLine = br.readLine()
+                if (inputLine == null)
+                    break;
+                content.append(inputLine)
             }
-            //If we didn't get a valid response, set the response code we were given instead
-            if(ret == null)
-                response = lastResponse
-        }).start()
-        //TODO loading wheel or something while waiting on response? App will probably go into App Not Responding if this takes too long, there is probably a better way
-        //TODO potentially just pass in a function that gets called when a response is determined, and possibly, none of the functions in this class get called from the main thread and whatever uses them has to do the loading wheel+wait for response
-        while(ret == null && response == null) {
-            Thread.sleep(20)
+            br.close()
+            con.disconnect()
+            ret = JSONObject(content.toString())
+        } else {//Other response codes mean something went wrong
+            SGLogger.info("Response was %s", responseCode)
+            //TODO Potentially return this so whatever screen we are on can handle it?
         }
-        //TODO handle response != null, which means we didn't get an expected response from the server.
         return ret
     }
 
