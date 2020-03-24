@@ -25,7 +25,6 @@ public class DefrostActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
-
         switch(v.getId()){
 
             case R.id.DefStartBut:
@@ -40,6 +39,7 @@ public class DefrostActivity extends AppCompatActivity implements View.OnClickLi
                 Stop.setVisibility(View.INVISIBLE);
                 Start.setEnabled(true);
                 Stop.setEnabled(false);
+                break;
         }
 
     }
