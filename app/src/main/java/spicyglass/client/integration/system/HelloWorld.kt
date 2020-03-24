@@ -5,7 +5,9 @@ object HelloWorld {
     fun helloWorld() {
         Thread(Runnable {
             println(SpicyApiTalker.getFullDB()?.toString() ?: "DB was null!")
-            println(SpicyApiTalker.getVehicleId("michael.bishop@ttu.edu", "blah") ?: "Vehicle ID was null!")
+            println(SpicyApiTalker.getVehicleIds("michael.bishop@ttu.edu", "blah"))
+            //Now let's try with an invalid user
+            println(SpicyApiTalker.getVehicleIds("michael.bishop@ttu.edu", "NotHisPassword"))
         }).start()
     }
 }
