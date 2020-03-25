@@ -1,4 +1,4 @@
-package spicyglass.client.integration.system
+package spicyglass.client.integration.external
 
 import org.json.JSONException
 import org.json.JSONObject
@@ -8,10 +8,13 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 /**
- * Do not call this class's functions from the main thread! Use:
- * Java: new Thread(r -> { CODE }).start();
- * Kotlin: Thread(Runnable { CODE }).start()
- * This does not handle the loading wheel or whatever the UI needs to do to indicate that it is connecting to the internet and retrieving data.
+ * The class that talks to the Spicy API.
+ * These functions take a callbackFunc parameter that will be called once the request to the API has
+ *  been made and a response received. These will be called on a different thread than the initial
+ *  function was called on.
+ * Don't expect your callback function to be called instantly. Depending on internet connection, it
+ *  may take time to get called. After one of these functions is called, some kind of loading
+ *  indicator should be used so the user knows the app is working.
  */
 object SpicyApiTalker {
     private const val apiUrl = "https://deployment-test-5tfsskgkda-uc.a.run.app/"
@@ -25,9 +28,13 @@ object SpicyApiTalker {
     //Takes vehicle_id, key, new_val, subkey (optional)
     private const val SET_VALUE = "set_val"
 
-    @JvmStatic
-    private fun makeRequest(endpoint: String, vararg keyValuePostArgs: Pair<String, String>): JSONObject? {
+    /**
+     * ALWAYS CALL THIS ON A DIFFERENT THREAD FROM MAIN. Doing this on main will result in App Not Responding because of
+     */
+    private fun makeRequest(endpoint: String, vararg keyValuePostArgs: Pair<String, String>): APIResponse<JSONObject?> {
         var ret: JSONObject? = null
+        var success = false
+        var errorMessage: String? = null
         val con = URL(apiUrl + endpoint).openConnection() as HttpURLConnection
         //GET_FULL_DB is the only one that uses GET at the moment
         con.requestMethod = if(endpoint == GET_FULL_DB) "GET" else "POST"
@@ -65,28 +72,34 @@ object SpicyApiTalker {
             con.disconnect()
             try {
                 ret = JSONObject(content.toString())
+                success = true
             } catch(e: JSONException) {
-                SGLogger.warn("Response could not be formatted to JSON: %s", content.toString())
+                //SGLogger.warn("Response could not be formatted to JSON: %s", content.toString())
+                errorMessage = content.toString()
             }
-        } else {//Other response codes mean something went wrong
+        }/* else {//Other response codes mean something went wrong
             SGLogger.info("Response was %s", responseCode)
-            //TODO Potentially return this so whatever screen we are on can handle it?
-        }
-        return ret
+        }*/
+        return APIResponse(ret, responseCode, success, errorMessage)
     }
 
     @JvmStatic
-    fun getFullDB(): JSONObject? {
-        return makeRequest(GET_FULL_DB)
+    fun getFullDB(callbackFunc: (response: APIResponse<JSONObject?>) -> Unit) {
+        Thread(Runnable{
+            callbackFunc.invoke(makeRequest(GET_FULL_DB))
+        }).start()
     }
 
     @JvmStatic
-    fun getVehicleIds(username: String, password: String): List<String> {
-        val idsObj = makeRequest(GET_VEHICLE_ID, Pair("username", username), Pair("password", password))
-        val ids = ArrayList<String>()
-        if(idsObj != null)
-            for(v: String in idsObj.keys())
-                ids.add(idsObj[v] as String)
-        return ids
+    fun getVehicleIds(username: String, password: String, callbackFunc: (response: APIResponse<List<String>>) -> Unit) {
+        Thread(Runnable {
+            val idsResponse = makeRequest(GET_VEHICLE_ID, Pair("username", username), Pair("password", password))
+            val ids = ArrayList<String>()
+            val respJson = idsResponse.response
+            if(respJson != null)
+                for(v: String in respJson.keys())
+                    ids.add(respJson[v] as String)
+            callbackFunc.invoke(APIResponse(ids, idsResponse.httpCode, idsResponse.success, idsResponse.errorMessage))
+        }).start()
     }
 }
