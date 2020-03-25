@@ -6,10 +6,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import spicyglass.client.integration.external.HelloWorld;
 
 //import spicyglass.client.integration.external.HelloWorld;
 
@@ -38,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) { //within the on click if login info is correct then you apply these if not give error msg
-                /*//if(username.getText().toString().equals("spicy@ttu.edu") && password.getText().toString().equals("glass")){
+                //if(username.getText().toString().equals("spicy@ttu.edu") && password.getText().toString().equals("glass")){
                     SharedPreferences login_info = getSharedPreferences(PREFS_NAME, 0);
                     SharedPreferences.Editor editor = login_info.edit();
                     editor.putString("logged","logged");
@@ -48,8 +47,8 @@ public class LoginActivity extends AppCompatActivity {
                 //else{
                     Toast.makeText(getApplicationContext(), "Stop Trying To Hack Someone!", Toast.LENGTH_SHORT).show();
                 //}
-                */
-                HelloWorld.helloWorld();
+
+                //HelloWorld.helloWorld();
             }
         });
 
