@@ -3,7 +3,6 @@ package spicyglass.client;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -34,22 +33,20 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(i);
         }
 
-        login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) { //within the on click if login info is correct then you apply these if not give error msg
-                //if(username.getText().toString().equals("spicy@ttu.edu") && password.getText().toString().equals("glass")){
-                    SharedPreferences login_info = getSharedPreferences(PREFS_NAME, 0);
-                    SharedPreferences.Editor editor = login_info.edit();
-                    editor.putString("logged","logged");
-                    editor.apply();
-                    LoginActivity.this.SwitchMainActivity();
-                //}
-                //else{
-                    Toast.makeText(getApplicationContext(), "Stop Trying To Hack Someone!", Toast.LENGTH_SHORT).show();
-                //}
+        login.setOnClickListener(v -> {
+            //within the on click if login info is correct then you apply these if not give error msg
+            //if(username.getText().toString().equals("spicy@ttu.edu") && password.getText().toString().equals("glass")){
+                SharedPreferences login_info1 = getSharedPreferences(PREFS_NAME, 0);
+                SharedPreferences.Editor editor = login_info1.edit();
+                editor.putString("logged","logged");
+                editor.apply();
+                LoginActivity.this.SwitchMainActivity();
+            //}
+            //else{
+                Toast.makeText(getApplicationContext(), "Stop Trying To Hack Someone!", Toast.LENGTH_SHORT).show();
+            //}
 
-                //HelloWorld.helloWorld();
-            }
+            //HelloWorld.helloWorld();
         });
 
     }
