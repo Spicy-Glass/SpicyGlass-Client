@@ -10,8 +10,6 @@ object HelloWorld {
         SpicyApiTalker.getVehicleIds("michael.bishop@ttu.edu", "blah", ::printResponseDetails)
         //Now let's try with an invalid user
         SpicyApiTalker.getVehicleIds("michael.bishop@ttu.edu", "NotHisPassword", ::printResponseDetails)
-
-        PubSubSubscriber.init()
     }
 
     private fun <T> printResponseDetails(response: APIResponse<T>) {

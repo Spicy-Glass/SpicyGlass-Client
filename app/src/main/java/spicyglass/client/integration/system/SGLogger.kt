@@ -23,7 +23,7 @@ object SGLogger {
      */
     @JvmStatic
     fun info(string: String, vararg args: Any) {
-        logger.info(String.format(string, *args))
+        logger.info("[Spicy Glass] "+String.format(string, *args))
     }
 
     /**
@@ -35,7 +35,7 @@ object SGLogger {
      */
     @JvmStatic
     fun warn(string: String, vararg args: Any) {
-        logger.warning(String.format(string, *args))
+        logger.warning("[Spicy Glass] "+String.format(string, *args))
     }
 
     /**
@@ -47,6 +47,6 @@ object SGLogger {
      */
     @JvmStatic
     fun error(string: String, vararg args: Any) {
-        logger.severe(String.format(string, *args))
+        logger.severe("[Spicy Glass] "+String.format(string, *args))
     }
 }
