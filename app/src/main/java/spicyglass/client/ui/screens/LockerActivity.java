@@ -105,25 +105,27 @@ public class LockerActivity extends AppCompatActivity implements View.OnClickLis
     }
     
     public Unit onStateChanged(boolean frontLeftLocked, boolean frontRightLocked, boolean rearLeftLocked, boolean rearRightLocked) {
-        FLeftU.setVisibility(frontLeftLocked ? View.VISIBLE : View.INVISIBLE);
-        FLeftL.setVisibility(frontLeftLocked ? View.INVISIBLE : View.VISIBLE);
-        FLeftU.setEnabled(frontLeftLocked);
-        FLeftL.setEnabled(!frontLeftLocked);
+        this.runOnUiThread(() -> {
+            FLeftU.setVisibility(!frontLeftLocked ?View.VISIBLE :View.INVISIBLE);
+            FLeftL.setVisibility(!frontLeftLocked ?View.INVISIBLE :View.VISIBLE);
+            FLeftU.setEnabled(!frontLeftLocked);
+            FLeftL.setEnabled(frontLeftLocked);
 
-        FRightU.setVisibility(frontRightLocked ? View.VISIBLE : View.INVISIBLE);
-        FRightL.setVisibility(frontRightLocked ? View.INVISIBLE : View.VISIBLE);
-        FRightU.setEnabled(frontRightLocked);
-        FRightL.setEnabled(!frontRightLocked);
+            FRightU.setVisibility(!frontRightLocked ?View.VISIBLE :View.INVISIBLE);
+            FRightL.setVisibility(!frontRightLocked ?View.INVISIBLE :View.VISIBLE);
+            FRightU.setEnabled(!frontRightLocked);
+            FRightL.setEnabled(frontRightLocked);
 
-        BLeftU.setVisibility(rearLeftLocked ? View.VISIBLE : View.INVISIBLE);
-        BLeftL.setVisibility(rearLeftLocked ? View.INVISIBLE : View.VISIBLE);
-        BLeftU.setEnabled(rearLeftLocked);
-        BLeftL.setEnabled(!rearLeftLocked);
+            BLeftU.setVisibility(!rearLeftLocked ?View.VISIBLE :View.INVISIBLE);
+            BLeftL.setVisibility(!rearLeftLocked ?View.INVISIBLE :View.VISIBLE);
+            BLeftU.setEnabled(!rearLeftLocked);
+            BLeftL.setEnabled(rearLeftLocked);
 
-        BRightU.setVisibility(rearRightLocked ? View.VISIBLE : View.INVISIBLE);
-        BRightL.setVisibility(rearRightLocked ? View.INVISIBLE : View.VISIBLE);
-        BRightU.setEnabled(rearRightLocked);
-        BRightL.setEnabled(!rearRightLocked);
+            BRightU.setVisibility(!rearRightLocked ?View.VISIBLE :View.INVISIBLE);
+            BRightL.setVisibility(!rearRightLocked ?View.INVISIBLE :View.VISIBLE);
+            BRightU.setEnabled(!rearRightLocked);
+            BRightL.setEnabled(rearRightLocked);
+        });
         return null;
     }
 
