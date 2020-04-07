@@ -2,12 +2,16 @@ package spicyglass.client;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.Date;
+
 import spicyglass.client.integration.external.PubSubSubscriber;
+import spicyglass.client.integration.system.CalendarHandler;
 
 public class LoginActivity extends AppCompatActivity {
     public static final String PREFS_NAME = "LoginPrefs";
@@ -43,6 +47,11 @@ public class LoginActivity extends AppCompatActivity {
             //}
             //else{
                 //Toast.makeText(getApplicationContext(), "Stop Trying To Hack Someone!", Toast.LENGTH_SHORT).show();
+            Calendar beginTime =  Calendar.getInstance();
+            beginTime.setTime(new Date(2020, 3, 1));
+            Calendar endTime = Calendar.getInstance();
+            endTime.setTime(new Date(2020, 4, 1));
+            CalendarHandler.requestEvent(this, beginTime, endTime);
             //}
         });
 
