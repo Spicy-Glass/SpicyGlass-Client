@@ -2,28 +2,29 @@ package spicyglass.client;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-//import spicyglass.client.integration.external.HelloWorld;
+import java.util.Date;
+
+import spicyglass.client.integration.external.PubSubSubscriber;
+import spicyglass.client.integration.system.CalendarHandler;
 
 public class LoginActivity extends AppCompatActivity {
     public static final String PREFS_NAME = "LoginPrefs";
     Button login;
-
 
     @Override
     protected void onCreate(Bundle SavedInstanceSTate){
         super.onCreate(SavedInstanceSTate);
         setContentView(R.layout.main_login);
 
-        login = (Button) findViewById(R.id.LogBut);
-        EditText username = (EditText) findViewById(R.id.Email);
-        EditText password = (EditText) findViewById(R.id.Password);
+        login = findViewById(R.id.LogBut);
+        //EditText username = (EditText) findViewById(R.id.Email);
+        //EditText password = (EditText) findViewById(R.id.Password);
 
         SharedPreferences login_info = getSharedPreferences("logged", 0);
 
@@ -40,13 +41,18 @@ public class LoginActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = login_info1.edit();
                 editor.putString("logged","logged");
                 editor.apply();
+                //Start the Subscriber on a new thread, DO NOT do it on the main thread
+                new Thread(()-> PubSubSubscriber.init(LoginActivity.this)).start();
                 LoginActivity.this.SwitchMainActivity();
             //}
             //else{
-                Toast.makeText(getApplicationContext(), "Stop Trying To Hack Someone!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), "Stop Trying To Hack Someone!", Toast.LENGTH_SHORT).show();
+            Calendar beginTime =  Calendar.getInstance();
+            beginTime.setTime(new Date(2020, 3, 1));
+            Calendar endTime = Calendar.getInstance();
+            endTime.setTime(new Date(2020, 4, 1));
+            CalendarHandler.requestEvent(this, beginTime, endTime);
             //}
-
-            //HelloWorld.helloWorld();
         });
 
     }
@@ -56,5 +62,4 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(i);
         finish();
     }
-
 }

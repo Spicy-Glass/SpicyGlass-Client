@@ -7,6 +7,7 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import spicyglass.client.integration.external.WeatherHandler;
 import spicyglass.client.ui.screens.AutoStartActivity;
 import spicyglass.client.ui.screens.DefrostActivity;
 import spicyglass.client.ui.screens.DiagnosisActivity;
@@ -14,8 +15,11 @@ import spicyglass.client.ui.screens.LockerActivity;
 import spicyglass.client.ui.screens.SeatActivity;
 import spicyglass.client.ui.screens.SettingActivity;
 
+//used for the weather API integration
+
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+
 
     private Button button1, button2, button3, button4, button5, button6, button7;
 
@@ -23,6 +27,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
+
+
+        WeatherHandler.GetAPIKey(); //function that requests the API Key
+
 
         button1 = findViewById(R.id.setting);
         button1.setOnClickListener(this);
@@ -78,5 +86,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
             //HelloWorld.helloWorld();
     }
+
+
 }
 

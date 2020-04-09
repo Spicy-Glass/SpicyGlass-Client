@@ -38,7 +38,7 @@ object SpicyApiTalker {
     /**
      * ALWAYS CALL THIS ON A DIFFERENT THREAD FROM MAIN. Doing this on main will result in App Not Responding because it takes too long to sit and wait for a response.
      */
-    private fun makeRequest(endpoint: String, vararg keyValuePostArgs: Pair<String, String>): APIResponse<JSONObject?> {
+    private fun makeRequest(endpoint: String, vararg keyValuePostArgs: Pair<String, Any?>): APIResponse<JSONObject?> {
         var ret: JSONObject? = null
         var success = false
         var errorMessage: String? = null
@@ -52,8 +52,8 @@ object SpicyApiTalker {
             con.doOutput = true
             var jsonInputString = "{"
             //Add all the key value pairs
-            for (pair: Pair<String, String> in keyValuePostArgs)
-                jsonInputString += "\"" + pair.first + "\":\"" + pair.second + "\","
+            for (pair: Pair<String, Any?> in keyValuePostArgs)//Check if it is a String before adding the string quotation marks because we want numbers and booleans to be numbers and booleans when they get sent
+                jsonInputString += if(pair.second is String) "\"" + pair.first + "\":\"" + pair.second + "\"," else "\"" + pair.first + "\":" + pair.second + ","
             //Trim off the final comma and add the close of the json object
             jsonInputString = jsonInputString.substring(0, jsonInputString.length - 1)+"}"
             //Send the parameters to the server
@@ -117,6 +117,16 @@ object SpicyApiTalker {
                 for(v: String in respJson.keys())
                     ids.add(respJson[v] as String)
             callbackFunc.invoke(APIResponse(ids, idsResponse.httpCode, idsResponse.success, idsResponse.errorMessage))
+        }).start()
+    }
+
+    @JvmStatic
+    fun updateLockState(vehicleId: String, state: Boolean, callbackFunc: (response: APIResponse<Boolean>) -> Unit) {
+        Thread(Runnable {
+            val idsResponse = makeRequest(SET_VALUE, Pair("vehicle_id", vehicleId), Pair("key", "carLock"), Pair("new_val", state), Pair("token", "asdfjfdklsjdjdyebv"), Pair("sender", "app"))
+            val respJson = idsResponse.response
+            val success = respJson?.get("success") as Boolean?
+            callbackFunc.invoke(APIResponse(success ?: false, idsResponse.httpCode, idsResponse.success, idsResponse.errorMessage))
         }).start()
     }
 }
