@@ -136,7 +136,7 @@ object SpicyApiTalker {
     @JvmStatic
     fun getVehicleState(vehicleId: String, callbackFunc: (response: APIResponse<JSONObject?>) -> Unit) {
         Thread(Runnable {
-            callbackFunc.invoke(makeRequest(GET_VEHICLE_ID, Pair("token", VehicleState.token), Pair("vehicle_id", vehicleId)))
+            callbackFunc.invoke(makeRequest(GET_VEHICLE_DATA, Pair("token", VehicleState.token), Pair("vehicle_id", vehicleId)))
         }).start()
     }
 
