@@ -2,6 +2,7 @@ package spicyglass.client.integration.external
 
 import org.json.JSONException
 import org.json.JSONObject
+import spicyglass.client.model.VehicleState
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
@@ -98,7 +99,7 @@ object SpicyApiTalker {
     @JvmStatic
     fun attemptLogin(username: String, password: String, callbackFunc: (response: APIResponse<String?>) -> Unit) {
         Thread(Runnable {
-            val idsResponse = makeRequest(GET_VEHICLE_ID, Pair("username", username), Pair("password", password))
+            val idsResponse = makeRequest(ATTEMPT_LOGIN, Pair("username", username), Pair("password", password))
             var token: String? = null
             val respJson = idsResponse.response
             if(respJson != null)
@@ -108,15 +109,34 @@ object SpicyApiTalker {
     }
 
     @JvmStatic
+    fun checkToken(token: String, callbackFunc: (response: APIResponse<Boolean>) -> Unit) {
+        Thread(Runnable {
+            val idsResponse = makeRequest(CHECK_TOKEN, Pair("token", token))
+            var validToken = false
+            val respJson = idsResponse.response
+            if(respJson != null)
+                validToken = true
+            callbackFunc.invoke(APIResponse(validToken, idsResponse.httpCode, idsResponse.success, idsResponse.errorMessage))
+        }).start()
+    }
+
+    @JvmStatic
     fun getVehicleIds(callbackFunc: (response: APIResponse<List<String>>) -> Unit) {
         Thread(Runnable {
-            val idsResponse = makeRequest(GET_VEHICLE_ID, Pair("token", token))
+            val idsResponse = makeRequest(GET_VEHICLE_ID, Pair("token", VehicleState.token))
             val ids = ArrayList<String>()
             val respJson = idsResponse.response
             if(respJson != null)
                 for(v: String in respJson.keys())
                     ids.add(respJson[v] as String)
             callbackFunc.invoke(APIResponse(ids, idsResponse.httpCode, idsResponse.success, idsResponse.errorMessage))
+        }).start()
+    }
+
+    @JvmStatic
+    fun getVehicleState(vehicleId: String, callbackFunc: (response: APIResponse<JSONObject?>) -> Unit) {
+        Thread(Runnable {
+            callbackFunc.invoke(makeRequest(GET_VEHICLE_ID, Pair("token", VehicleState.token), Pair("vehicle_id", vehicleId)))
         }).start()
     }
 

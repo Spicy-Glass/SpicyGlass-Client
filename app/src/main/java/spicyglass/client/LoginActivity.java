@@ -17,26 +17,28 @@ import spicyglass.client.integration.external.APIResponse;
 import spicyglass.client.integration.external.PubSubSubscriber;
 import spicyglass.client.integration.external.SpicyApiTalker;
 import spicyglass.client.integration.system.CalendarHandler;
+import spicyglass.client.model.VehicleState;
 
 public class LoginActivity extends AppCompatActivity {
-    public static final String PREFS_NAME = "LoginPrefs";
-    Button login;
+    public static final String PREFS_NAME = "SpicyLoginPrefs";
 
     @Override
     protected void onCreate(Bundle SavedInstanceSTate){
         super.onCreate(SavedInstanceSTate);
         setContentView(R.layout.main_login);
 
-        login = findViewById(R.id.LogBut);
-        EditText username = (EditText) findViewById(R.id.Email);
-        EditText password = (EditText) findViewById(R.id.Password);
+        Button login = findViewById(R.id.LogBut);
+        EditText username = findViewById(R.id.Email);
+        EditText password = findViewById(R.id.Password);
 
-        SharedPreferences login_info = getSharedPreferences("logged", 0);
+        SharedPreferences login_info = getSharedPreferences(PREFS_NAME, 0);
+        String token = login_info.getString("token","");
 
-
-        if (login_info.getString("logged","").toString().equals("logged")){
-            Intent i = new Intent(this, MainActivity.class);
-            startActivity(i);
+        if (!token.isEmpty()){
+            //Go ahead and store the token here so we don't have to copy the sharedpreferences stuff into the validatedToken function
+            //If it is invalid, it will just be overwritten when the user logs in.
+            VehicleState.INSTANCE.setToken(token);
+            SpicyApiTalker.checkToken(token, this::validatedToken);
         }
 
         login.setOnClickListener(v -> {
@@ -52,22 +54,36 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    public Unit validatedToken(APIResponse<Boolean> response) {
+        if(response.getSuccess() && response.getResponse()) {
+            switchToMainActivity();
+        } else {
+            //We probably don't need any error handling for this one, if the token isn't valid the user will just have to log in.
+            //However, show it for now in case we get something unexpected
+            Toast.makeText(getApplicationContext(), response.getErrorMessage(), Toast.LENGTH_LONG).show();
+        }
+        return null;
+    }
+
     public Unit finishLogin(APIResponse<String> response) {
         if(response.getSuccess()) {
-            SharedPreferences login_info1 = getSharedPreferences(PREFS_NAME, 0);
-            SharedPreferences.Editor editor = login_info1.edit();
-            editor.putString("logged", "logged");
-            editor.apply();
+            SharedPreferences loginPreferences = getSharedPreferences(PREFS_NAME, 0);
+            loginPreferences.edit()
+                    .putString("token", response.getResponse())
+                    .apply();
+            VehicleState.INSTANCE.setToken(response.getResponse());
             //Start the Subscriber on a new thread, DO NOT do it on the main thread
             new Thread(() -> PubSubSubscriber.init(LoginActivity.this)).start();
-            LoginActivity.this.SwitchMainActivity();
+            switchToMainActivity();
         } else {
             Toast.makeText(getApplicationContext(), response.getErrorMessage(), Toast.LENGTH_LONG).show();
         }
         return null;
     }
 
-    public void SwitchMainActivity(){
+    public void switchToMainActivity(){
+        //Start the state retrieval before we switch to the main screen. This doesn't necessarily mean it'll finish.
+        VehicleState.getStates();
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
         finish();
