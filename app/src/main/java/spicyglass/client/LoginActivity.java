@@ -55,29 +55,33 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public Unit validatedToken(APIResponse<Boolean> response) {
-        if(response.getSuccess() && response.getResponse()) {
-            switchToMainActivity();
-        } else {
-            //We probably don't need any error handling for this one, if the token isn't valid the user will just have to log in.
-            //However, show it for now in case we get something unexpected
-            Toast.makeText(getApplicationContext(), response.getErrorMessage(), Toast.LENGTH_LONG).show();
-        }
+        runOnUiThread(() -> {
+            if(response.getSuccess() && response.getResponse()) {
+                switchToMainActivity();
+            } else {
+                //We probably don't need any error handling for this one, if the token isn't valid the user will just have to log in.
+                //However, show it for now in case we get something unexpected
+                Toast.makeText(getApplicationContext(), response.getErrorMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
         return null;
     }
 
     public Unit finishLogin(APIResponse<String> response) {
-        if(response.getSuccess()) {
-            SharedPreferences loginPreferences = getSharedPreferences(PREFS_NAME, 0);
-            loginPreferences.edit()
-                    .putString("token", response.getResponse())
-                    .apply();
-            VehicleState.INSTANCE.setToken(response.getResponse());
-            //Start the Subscriber on a new thread, DO NOT do it on the main thread
-            new Thread(() -> PubSubSubscriber.init(LoginActivity.this)).start();
-            switchToMainActivity();
-        } else {
-            Toast.makeText(getApplicationContext(), response.getErrorMessage(), Toast.LENGTH_LONG).show();
-        }
+        runOnUiThread(() -> {
+            if(response.getSuccess()) {
+                SharedPreferences loginPreferences = getSharedPreferences(PREFS_NAME, 0);
+                loginPreferences.edit()
+                        .putString("token", response.getResponse())
+                        .apply();
+                VehicleState.INSTANCE.setToken(response.getResponse());
+                //Start the Subscriber on a new thread, DO NOT do it on the main thread
+                new Thread(() -> PubSubSubscriber.init(LoginActivity.this)).start();
+                switchToMainActivity();
+            } else {
+                Toast.makeText(getApplicationContext(), response.getErrorMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
         return null;
     }
 
