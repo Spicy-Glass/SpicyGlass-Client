@@ -54,7 +54,7 @@ object VehicleState {
 
     private fun onStatesRetrieved(resp: APIResponse<JSONObject?>) {
         if(resp.success && resp.response != null) {
-            val json = resp.response as JSONObject
+            val json = (resp.response as JSONObject).getJSONObject("states")
             SGLogger.info(json.toString())
             //TODO update this with the rest of the data from the json as it gets implemented
             updateLocks(json.getBoolean("carLock"), true, true, true)
