@@ -2,6 +2,8 @@ package spicyglass.client.integration.external;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -13,13 +15,15 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import spicyglass.client.R;
+
 public class WeatherHandler {
 
     public static JSONArray GetAPIKey(){
         String APIKeyVar;
         WeatherAPI weather = new WeatherAPI();
         try {
-            APIKeyVar = weather.execute("https://openweathermap.org/data/2.5/weather?q=Lubbock&appid=b6907d289e10d714a6e88b30761fae22").get(); //gets the information for the location
+            APIKeyVar = weather.execute("https://openweathermap.org/data/2.5/weather?q=lubbock&appid=439d4b804bc8187953eb36d2a8c26a02").get(); //gets the information for the location
             //first we will check data is retrieve successfully or not
             Log.i("APIData", APIKeyVar); //displays data from the whole API
 
@@ -37,8 +41,74 @@ public class WeatherHandler {
         return null;
     }
 
-    public static String RequestWeather(String[] address) {
+    public static String displayWeather(){
+        WeatherAPI weather = new WeatherAPI();
         try {
+            String content;
+            content = weather.execute("https://openweathermap.org/data/2.5/weather?q=lubbock&appid=439d4b804bc8187953eb36d2a8c26a02").get(); //gets the information for the location
+
+            //JSON
+            JSONObject jsonObject = new JSONObject(content);
+            String weatherData = jsonObject.getString("weather");
+            String mainTemperature = jsonObject.getString("main");
+            Log.i("weatherData",weatherData);
+
+            String windData = jsonObject.getString("wind"); //TEST
+            Log.i("windData", windData);
+
+            String location = jsonObject.getString("name");
+
+            //weather data is in Array
+            JSONArray array = new JSONArray(weatherData);
+
+            //wind data is in Array 1
+            //JSONArray array1 = new JSONArray(windData);
+
+            //String main = "";
+            String description = "";
+            String temperature = "";
+            String windSpeed = "";
+
+
+
+            for(int i = 0; i< array.length(); i++){
+                JSONObject weatherPart = array.getJSONObject(i);
+                //main = weatherPart.getString("main");
+                description = weatherPart.getString("description");
+            }
+            JSONObject mainPart = new JSONObject(mainTemperature);
+            temperature = mainPart.getString("temp");
+
+            JSONObject windPart = new JSONObject(windData);
+            windSpeed = windPart.getString("speed");
+
+
+
+            //Log.i("Temperature", temperature);
+            //Log.i("main",main);
+            //Log.i("description",description);
+            //Log.i("windSpeed", windSpeed);
+            //Log.i("location", location);
+
+
+            String resultText = "Description: " + description
+                    + "\nTemperature: " + temperature + "°C"
+                    + "\nWind Speeds: " + windSpeed
+                    + "\nLocation: " + location;
+
+            return resultText;
+            //result.setText(resultText); //Should display text
+
+
+        } catch (Exception e) { //used to check if variable content doesn't go through
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static String RequestWeather(String[] address) {
+
+    try {
             URL url = new URL(address[0]); //checks URL verification
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             //Establishes connection with address
