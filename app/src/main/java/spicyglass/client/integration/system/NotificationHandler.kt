@@ -10,6 +10,7 @@ import spicyglass.client.R
  * The notification handler class.
  */
 object NotificationHandler {
+    var notificationId = 0
     fun sendNotification(context: Context, channel: String, smallIcon: Int = R.drawable.ic_fire_black_24dp, title: String = "Spicy Glass", text: String = ""): Int {
         val mBuilder = NotificationCompat.Builder(context, channel)
         mBuilder.setSmallIcon(smallIcon)
@@ -17,9 +18,8 @@ object NotificationHandler {
         mBuilder.setContentText(text)
         //TODO attach actions
         val mNotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val notificationId = 0 //TODO varying IDs
         // notificationID allows you to update the notification later on.
-        mNotificationManager.notify(notificationId, mBuilder.build())
+        mNotificationManager.notify(++notificationId, mBuilder.build())
         return notificationId
     }
 }
