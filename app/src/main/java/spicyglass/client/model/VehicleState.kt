@@ -11,13 +11,19 @@ import spicyglass.client.integration.system.SGLogger
 object VehicleState {
     var token: String = ""
     //TODO Have a way to pick vehicle ID correctly
-    private val vehicle_id: String = "V-1"
+    val vehicleId: String = "V-1"
+    //Track all states of the active vehicle
     private var frontLeftLocked = true
     private var frontRightLocked = true
     private var rearLeftLocked = true
     private var rearRightLocked = true
 
+    //Function to be called when the vehicle state is updated. There will only be one if we are on the Locker screen, as that's the only time something on the display will need to be updated with the new states
     private var lockUpdatedFunc: ((Boolean, Boolean, Boolean, Boolean) -> Unit)? = null
+
+    /**
+     * Update the stored lock state of the vehicle.
+     */
     @JvmStatic
     fun updateLocks(frontLeftLocked: Boolean, frontRightLocked: Boolean, rearLeftLocked: Boolean, rearRightLocked: Boolean) {
         var changed = false
@@ -38,10 +44,14 @@ object VehicleState {
             changed = true
         }
         if (changed) {
+            //If the state is any different and the update function is not null, call the update function to update what's on the screen.
             lockUpdatedFunc?.invoke(frontLeftLocked, frontRightLocked, rearLeftLocked, rearRightLocked)
         }
     }
 
+    /**
+     * Set the function to be called when the lock states change. Set to null to clear the function.
+     */
     @JvmStatic
     fun setLockUpdatedFunc(func: ((Boolean, Boolean, Boolean, Boolean) -> Unit)?) {
         lockUpdatedFunc = func
@@ -49,7 +59,7 @@ object VehicleState {
 
     @JvmStatic
     fun getStates() {
-        SpicyApiTalker.getVehicleState(vehicle_id, this::onStatesRetrieved)
+        SpicyApiTalker.getVehicleState(vehicleId, this::onStatesRetrieved)
     }
 
     private fun onStatesRetrieved(resp: APIResponse<JSONObject?>) {

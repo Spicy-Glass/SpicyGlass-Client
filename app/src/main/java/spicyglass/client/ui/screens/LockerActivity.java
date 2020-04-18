@@ -22,28 +22,30 @@ public class LockerActivity extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.locker_page);
 
-        FLeftU = (ImageButton) findViewById(R.id.FLeftUnlock);
+        FLeftU = findViewById(R.id.FLeftUnlock);
         FLeftU.setOnClickListener(this);
-        FLeftL = (ImageButton) findViewById(R.id.FLeftLock);
+        FLeftL = findViewById(R.id.FLeftLock);
         FLeftL.setOnClickListener(this);
-        FRightU = (ImageButton) findViewById(R.id.FRightUnlock);
+        FRightU = findViewById(R.id.FRightUnlock);
         FRightU.setOnClickListener(this);
-        FRightL = (ImageButton) findViewById(R.id.FRightLock);
+        FRightL = findViewById(R.id.FRightLock);
         FRightL.setOnClickListener(this);
-        BLeftU = (ImageButton) findViewById(R.id.BLeftUnlock);
+        BLeftU = findViewById(R.id.BLeftUnlock);
         BLeftU.setOnClickListener(this);
-        BLeftL = (ImageButton) findViewById(R.id.BLeftLock);
+        BLeftL = findViewById(R.id.BLeftLock);
         BLeftL.setOnClickListener(this);
-        BRightU = (ImageButton) findViewById(R.id.BRightUnlock);
+        BRightU = findViewById(R.id.BRightUnlock);
         BRightU.setOnClickListener(this);
-        BRightL = (ImageButton) findViewById(R.id.BRightLock);
+        BRightL = findViewById(R.id.BRightLock);
         BRightL.setOnClickListener(this);
 
+        //Set the function to be called when the state of the locks updates
         VehicleState.setLockUpdatedFunc(this::onStateChanged);
     }
 
     @Override
     protected void onDestroy() {
+        //Clear the updated function because this screen will no longer be open, so we won't need to monitor for updates to the locks.
         VehicleState.setLockUpdatedFunc(null);
         super.onDestroy();
     }
@@ -52,11 +54,11 @@ public class LockerActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View v) {
         switch(v.getId()){
             case R.id.FLeftUnlock:
-                SpicyApiTalker.updateLockState("V-1", true, this::onUnlock);
+                SpicyApiTalker.updateLockState(VehicleState.INSTANCE.getVehicleId(), true, this::onUnlock);
                 break;
 
             case R.id.FLeftLock:
-                SpicyApiTalker.updateLockState("V-1", false, this::onLock);
+                SpicyApiTalker.updateLockState(VehicleState.INSTANCE.getVehicleId(), false, this::onLock);
                 break;
 
             case R.id.FRightUnlock:

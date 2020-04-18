@@ -86,7 +86,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void switchToMainActivity(){
-        //Start the state retrieval before we switch to the main screen. This doesn't necessarily mean it'll finish.
+        //Start the state retrieval before we switch to the main screen. This doesn't necessarily mean it'll finish before the switch happens.
         VehicleState.getStates();
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
