@@ -13,7 +13,6 @@ import spicyglass.client.R;
 import spicyglass.client.ui.screens.settings.VehicleActivity;
 
 public class SettingActivity extends AppCompatActivity implements View.OnClickListener{
-    public static final String PREFS_NAME = "LoginPrefs";
     Button LogOut, Vehicle;
 
     @Override
@@ -35,9 +34,9 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         switch(v.getId()){
 
             case R.id.logout_but:
-                SharedPreferences login_info = getSharedPreferences(PREFS_NAME, 0);
+                SharedPreferences login_info = getSharedPreferences(LoginActivity.PREFS_NAME, 0);
                 SharedPreferences.Editor editor = login_info.edit();
-                editor.remove("logged");
+                editor.remove("token");
                 editor.apply();
                 SettingActivity.this.SwitchToLogin();
                 break;
