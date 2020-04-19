@@ -17,10 +17,6 @@ public class DefrostActivity extends AppCompatActivity implements View.OnClickLi
     Button Start, Stop, Calendar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //retrieveWeather();
-
-
-
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.defrost_page);
@@ -30,13 +26,12 @@ public class DefrostActivity extends AppCompatActivity implements View.OnClickLi
         Stop = (Button) findViewById(R.id.DefStopBut);
         Stop.setOnClickListener(this);
 
+        //Work done to display weather data
         result = findViewById(R.id.result);
-        //String content = "";
         String display;
         WeatherHandler weather = new WeatherHandler(); //creates new object
         display = weather.displayWeather();
-        //Log.i("Display", display);
-        result.setText(display); //ISSUES BEING CAUSED HERE
+        result.setText(display);
 
     }
 
@@ -61,16 +56,4 @@ public class DefrostActivity extends AppCompatActivity implements View.OnClickLi
 
     }
 
-   /* public void retrieveWeather(){ //USED TO DISPLAY WEATHER ON DEFROST
-        result = (TextView) findViewById(R.id.result);
-        String content = "";
-        String display;
-        WeatherHandler weather = new WeatherHandler(); //creates new object
-        display = weather.displayWeather(content);
-        //Log.i("Display", display);
-        result.setText(display); //ISSUES BEING CAUSED HERE
-
-
-    }
-    */
 }

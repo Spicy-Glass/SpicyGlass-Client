@@ -14,6 +14,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DecimalFormat;
 
 import spicyglass.client.R;
 
@@ -61,13 +62,12 @@ public class WeatherHandler {
             //weather data is in Array
             JSONArray array = new JSONArray(weatherData);
 
-            //wind data is in Array 1
-            //JSONArray array1 = new JSONArray(windData);
-
             //String main = "";
             String description = "";
             String temperature = "";
             String windSpeed = "";
+            Double temperatureConversion;
+            Double windSpeedConversion;
 
 
 
@@ -82,7 +82,22 @@ public class WeatherHandler {
             JSONObject windPart = new JSONObject(windData);
             windSpeed = windPart.getString("speed");
 
+            temperatureConversion = Double.parseDouble(temperature);
+            windSpeedConversion = Double.parseDouble(windSpeed);
 
+            double temperatureConversiontoF;
+            temperatureConversiontoF = (temperatureConversion * (9/5)) + 32; //converts to degrees fahrenheit
+
+            double windSpeedConversiontoMPH;
+            windSpeedConversiontoMPH = (windSpeedConversion *  2.2369); //converts from M/Sec to MPH
+            DecimalFormat df = new DecimalFormat(); //done to round the wind speeds
+            df.setMaximumFractionDigits(0);
+
+            String prompt = "";
+
+            if (temperatureConversiontoF <= 40.0) { //enter 29.0 to TEST if functionality works
+                prompt = checkFrosty();
+            }
 
             //Log.i("Temperature", temperature);
             //Log.i("main",main);
@@ -92,9 +107,10 @@ public class WeatherHandler {
 
 
             String resultText = "Description: " + description
-                    + "\nTemperature: " + temperature + "°C"
-                    + "\nWind Speeds: " + windSpeed
-                    + "\nLocation: " + location;
+                    + "\nTemperature: " + temperatureConversiontoF + "°F"
+                    + "\nWind Speeds: " + df.format(windSpeedConversiontoMPH) + " MPH"
+                    + "\nLocation: " + location
+                    + prompt;
 
             return resultText;
             //result.setText(resultText); //Should display text
@@ -104,6 +120,10 @@ public class WeatherHandler {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static String checkFrosty(){
+        return "\n\nDue to low Temperatures, \ndefrost is recommended";
     }
 
     public static String RequestWeather(String[] address) {
