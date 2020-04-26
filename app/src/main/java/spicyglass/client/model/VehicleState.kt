@@ -21,10 +21,13 @@ object VehicleState {
     var frontRightSeatHeating = false
     var rearLeftSeatHeating = false
     var rearRightSeatHeating = false
+    var frontDefrost = false
+    var rearDefrost = false
 
     //Function to be called when the vehicle state is updated. There will only be one if we are on the Locker screen, as that's the only time something on the display will need to be updated with the new states
     private var lockUpdatedFunc: ((Boolean, Boolean, Boolean, Boolean) -> Unit)? = null
     private var seatHeatingUpdatedFunc: ((Boolean, Boolean, Boolean, Boolean) -> Unit)? = null
+    private var defrostUpdatedFunc: ((Boolean, Boolean) -> Unit)? = null
 
     /**
      * Update the stored lock state of the vehicle.
@@ -79,6 +82,23 @@ object VehicleState {
         }
     }
 
+    @JvmStatic
+    fun updateDefrost(frontDefrost: Boolean, rearDefrost: Boolean) {
+        var changed = false
+        if (VehicleState.frontDefrost != frontDefrost) {
+            VehicleState.frontDefrost = frontDefrost
+            changed = true
+        }
+        if (VehicleState.rearDefrost != rearDefrost) {
+            VehicleState.rearDefrost = rearDefrost
+            changed = true
+        }
+        if (changed) {
+            //If the state is any different and the update function is not null, call the update function to update what's on the screen.
+            defrostUpdatedFunc?.invoke(frontDefrost, rearDefrost)
+        }
+    }
+
     /**
      * Set the function to be called when the lock states change. Set to null to clear the function.
      */
@@ -90,6 +110,11 @@ object VehicleState {
     @JvmStatic
     fun setSeatHeatingUpdatedFunc(func: ((Boolean, Boolean, Boolean, Boolean) -> Unit)?) {
         seatHeatingUpdatedFunc = func
+    }
+
+    @JvmStatic
+    fun setDefrostUpdatedFunc(func: ((Boolean, Boolean) -> Unit)?) {
+        defrostUpdatedFunc = func
     }
 
     @JvmStatic
@@ -106,6 +131,8 @@ object VehicleState {
             updateLocks(carLockObj.getBoolean(SpicyApiTalker.FRONT_LEFT), carLockObj.getBoolean(SpicyApiTalker.FRONT_RIGHT), carLockObj.getBoolean(SpicyApiTalker.REAR_LEFT), carLockObj.getBoolean(SpicyApiTalker.REAR_RIGHT))
             val seatHeatObj = json.getJSONObject("seatHeater")
             updateSeatHeaters(seatHeatObj.getBoolean(SpicyApiTalker.FRONT_LEFT), seatHeatObj.getBoolean(SpicyApiTalker.FRONT_RIGHT), seatHeatObj.getBoolean(SpicyApiTalker.REAR_LEFT), seatHeatObj.getBoolean(SpicyApiTalker.REAR_RIGHT))
+            val defrostObj = json.getJSONObject("defrost")
+            updateDefrost(defrostObj.getBoolean(SpicyApiTalker.FRONT), defrostObj.getBoolean(SpicyApiTalker.REAR))
         } else {
             SGLogger.error(resp.errorMessage ?: "Error retrieving vehicle state information: ${resp.httpCode}")
         }

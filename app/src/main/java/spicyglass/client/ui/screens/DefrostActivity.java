@@ -7,50 +7,91 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import kotlin.Unit;
 import spicyglass.client.R;
+import spicyglass.client.integration.external.APIResponse;
+import spicyglass.client.integration.external.SpicyApiTalker;
 import spicyglass.client.integration.external.WeatherHandler;
+import spicyglass.client.model.VehicleState;
 
 
-public class DefrostActivity extends AppCompatActivity implements View.OnClickListener {
+public class DefrostActivity extends AppCompatActivity {
     TextView result;
-    Button Start, Stop, Calendar;
+    Button startFront, stopFront, startRear, stopRear, calendar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.defrost_page);
 
-        Start = (Button) findViewById(R.id.DefStartBut);
-        Start.setOnClickListener(this);
-        Stop = (Button) findViewById(R.id.DefStopBut);
-        Stop.setOnClickListener(this);
+        startFront = findViewById(R.id.DefStartBut);
+        startFront.setOnClickListener(c -> SpicyApiTalker.updateDefrostState(VehicleState.INSTANCE.getVehicleId(), SpicyApiTalker.FRONT, true, this::onStartFront));
+        stopFront = findViewById(R.id.DefStopBut);
+        stopFront.setOnClickListener(c -> SpicyApiTalker.updateDefrostState(VehicleState.INSTANCE.getVehicleId(), SpicyApiTalker.FRONT, false, this::onStopFront));
+
+        startRear = findViewById(R.id.RearStartBut);
+        startRear.setOnClickListener(c -> SpicyApiTalker.updateDefrostState(VehicleState.INSTANCE.getVehicleId(), SpicyApiTalker.REAR, true, this::onStartRear));
+        stopRear = findViewById(R.id.RearStopBut);
+        stopRear.setOnClickListener(c -> SpicyApiTalker.updateDefrostState(VehicleState.INSTANCE.getVehicleId(), SpicyApiTalker.REAR, false, this::onStopRear));
 
         //Work done to display weather data
         result = findViewById(R.id.result);
         String display = WeatherHandler.displayWeather();
         result.setText(display);
 
+        //Set the function to be called when the state of the locks updates
+        VehicleState.setDefrostUpdatedFunc(this::onStateChanged);
+        //Set the states when it opens
+        onStateChanged(VehicleState.INSTANCE.getFrontDefrost(), VehicleState.INSTANCE.getRearDefrost());
     }
 
     @Override
-    public void onClick(View v) {
-        switch(v.getId()){
-
-            case R.id.DefStartBut:
-                Start.setVisibility(View.INVISIBLE);
-                Stop.setVisibility(View.VISIBLE);
-                Start.setEnabled(false);
-                Stop.setEnabled(true);
-                break;
-
-            case R.id.DefStopBut:
-                Start.setVisibility(View.VISIBLE);
-                Stop.setVisibility(View.INVISIBLE);
-                Start.setEnabled(true);
-                Stop.setEnabled(false);
-                break;
-        }
-
+    protected void onDestroy() {
+        //Clear the updated function because this screen will no longer be open, so we won't need to monitor for updates to the defrost.
+        VehicleState.setDefrostUpdatedFunc(null);
+        super.onDestroy();
     }
 
+    public Unit onStateChanged(boolean frontDefrosting, boolean rearDefrosting) {
+        this.runOnUiThread(() -> {
+            startFront.setVisibility(!frontDefrosting ?View.VISIBLE :View.INVISIBLE);
+            stopFront.setVisibility(!frontDefrosting ?View.INVISIBLE :View.VISIBLE);
+            startFront.setEnabled(!frontDefrosting);
+            stopFront.setEnabled(frontDefrosting);
+
+            startRear.setVisibility(!rearDefrosting ?View.VISIBLE :View.INVISIBLE);
+            stopRear.setVisibility(!rearDefrosting ?View.INVISIBLE :View.VISIBLE);
+            startRear.setEnabled(!rearDefrosting);
+            stopRear.setEnabled(rearDefrosting);
+        });
+        return null;
+    }
+
+    public Unit onStartFront(APIResponse<Boolean> response) {
+        if(response.getSuccess() && response.getResponse()) {
+            VehicleState.updateDefrost(true, VehicleState.INSTANCE.getRearDefrost());
+        }
+        return null;
+    }
+
+    public Unit onStopFront(APIResponse<Boolean> response) {
+        if(response.getSuccess() && response.getResponse()) {
+            VehicleState.updateDefrost(false, VehicleState.INSTANCE.getRearDefrost());
+        }
+        return null;
+    }
+
+    public Unit onStartRear(APIResponse<Boolean> response) {
+        if(response.getSuccess() && response.getResponse()) {
+            VehicleState.updateDefrost(VehicleState.INSTANCE.getFrontDefrost(), true);
+        }
+        return null;
+    }
+
+    public Unit onStopRear(APIResponse<Boolean> response) {
+        if(response.getSuccess() && response.getResponse()) {
+            VehicleState.updateDefrost(VehicleState.INSTANCE.getFrontDefrost(), false);
+        }
+        return null;
+    }
 }

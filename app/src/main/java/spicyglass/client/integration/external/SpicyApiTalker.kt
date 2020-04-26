@@ -151,4 +151,17 @@ object SpicyApiTalker {
             callbackFunc.invoke(APIResponse(success ?: false, idsResponse.httpCode, idsResponse.success, idsResponse.errorMessage))
         }).start()
     }
+
+    const val FRONT = "front"
+    const val REAR = "back"
+
+    @JvmStatic
+    fun updateDefrostState(vehicleId: String, slot: String, state: Boolean, callbackFunc: (response: APIResponse<Boolean>) -> Unit) {
+        Thread(Runnable {
+            val idsResponse = makeRequest(SET_VALUE, Pair("vehicle_id", vehicleId), Pair("key", "defrost"), Pair("subkey", slot), Pair("new_val", state), Pair("token", VehicleState.token), Pair("sender", "app"))
+            val respJson = idsResponse.response
+            val success = respJson?.get("success") as Boolean?
+            callbackFunc.invoke(APIResponse(success ?: false, idsResponse.httpCode, idsResponse.success, idsResponse.errorMessage))
+        }).start()
+    }
 }
