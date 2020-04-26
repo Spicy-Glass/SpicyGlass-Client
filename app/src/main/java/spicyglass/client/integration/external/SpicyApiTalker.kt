@@ -19,9 +19,6 @@ import java.net.URL
  */
 object SpicyApiTalker {
     private const val apiUrl = "https://deployment-test-5tfsskgkda-uc.a.run.app/"
-    //GET request
-    @Deprecated("DEBUGGING USE ONLY")
-    private const val GET_FULL_DB = "get_full_database"
     //POST requests
     //Takes token
     private const val LOGOUT = "revoke_token"
@@ -44,12 +41,10 @@ object SpicyApiTalker {
         var success = false
         var errorMessage: String? = null
         val con = URL(apiUrl + endpoint).openConnection() as HttpURLConnection
-        //GET_FULL_DB is the only one that uses GET, and it will be removed by the end of this
-        con.requestMethod = if(endpoint == GET_FULL_DB) "GET" else "POST"
+        con.requestMethod = "POST"
         con.setRequestProperty("Content-Type", "application/json; utf-8")
         con.setRequestProperty("Accept", "application/json")
-        //Only write parameters for POST, or else we get response code 405 (Method Not Allowed)
-        if(con.requestMethod == "POST" && keyValuePostArgs.isNotEmpty()) {
+        if(keyValuePostArgs.isNotEmpty()) {
             con.doOutput = true
             var jsonInputString = "{"
             //Add all the key value pairs
@@ -86,14 +81,6 @@ object SpicyApiTalker {
             }
         }
         return APIResponse(ret, responseCode, success, errorMessage)
-    }
-
-    @JvmStatic
-    @Deprecated("DEBUGGING USE ONLY")
-    fun getFullDB(callbackFunc: (response: APIResponse<JSONObject?>) -> Unit) {
-        Thread(Runnable{
-            callbackFunc.invoke(makeRequest(GET_FULL_DB))
-        }).start()
     }
 
     @JvmStatic
@@ -143,7 +130,7 @@ object SpicyApiTalker {
     @JvmStatic
     fun updateLockState(vehicleId: String, state: Boolean, callbackFunc: (response: APIResponse<Boolean>) -> Unit) {
         Thread(Runnable {
-            val idsResponse = makeRequest(SET_VALUE, Pair("vehicle_id", vehicleId), Pair("key", "carLock"), Pair("new_val", state), Pair("token", "asdfjfdklsjdjdyebv"), Pair("sender", "app"))
+            val idsResponse = makeRequest(SET_VALUE, Pair("vehicle_id", vehicleId), Pair("key", "carLock"), Pair("new_val", state), Pair("token", VehicleState.token), Pair("sender", "app"))
             val respJson = idsResponse.response
             val success = respJson?.get("success") as Boolean?
             callbackFunc.invoke(APIResponse(success ?: false, idsResponse.httpCode, idsResponse.success, idsResponse.errorMessage))
