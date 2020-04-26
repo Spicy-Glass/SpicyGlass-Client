@@ -20,7 +20,7 @@ import spicyglass.client.model.VehicleState;
 public final class PubSubSubscriber {
     public static void init(Context ctx) {
         String projectId = "pub-sub132608";
-        String subscriptionId = "sub_asdfjfdklsjdjdyebv_app";
+        String subscriptionId = "sub_app";
 
         ProjectSubscriptionName subscriptionName =
                 ProjectSubscriptionName.of(projectId, subscriptionId);
