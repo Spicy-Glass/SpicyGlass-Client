@@ -1,7 +1,6 @@
 package spicyglass.client.ui.screens;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -28,9 +27,7 @@ public class DefrostActivity extends AppCompatActivity implements View.OnClickLi
 
         //Work done to display weather data
         result = findViewById(R.id.result);
-        String display;
-        WeatherHandler weather = new WeatherHandler(); //creates new object
-        display = weather.displayWeather();
+        String display = WeatherHandler.displayWeather();
         result.setText(display);
 
     }
