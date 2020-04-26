@@ -12,10 +12,8 @@ import spicyglass.client.integration.external.APIResponse;
 import spicyglass.client.integration.external.SpicyApiTalker;
 import spicyglass.client.model.VehicleState;
 
-public class LockerActivity extends AppCompatActivity implements View.OnClickListener {
+public class LockerActivity extends AppCompatActivity {
     ImageButton FLeftU, FLeftL, FRightU, FRightL, BLeftU, BLeftL, BRightU, BRightL;
-
-    //ImageButton lock, unlock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,24 +21,26 @@ public class LockerActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.locker_page);
 
         FLeftU = findViewById(R.id.FLeftUnlock);
-        FLeftU.setOnClickListener(this);
+        FLeftU.setOnClickListener(c -> SpicyApiTalker.updateLockState(VehicleState.INSTANCE.getVehicleId(), SpicyApiTalker.FRONT_LEFT, true, this::onUnlockFrontLeft));
         FLeftL = findViewById(R.id.FLeftLock);
-        FLeftL.setOnClickListener(this);
+        FLeftL.setOnClickListener(c -> SpicyApiTalker.updateLockState(VehicleState.INSTANCE.getVehicleId(), SpicyApiTalker.FRONT_LEFT, false, this::onLockFrontLeft));
         FRightU = findViewById(R.id.FRightUnlock);
-        FRightU.setOnClickListener(this);
+        FRightU.setOnClickListener(c -> SpicyApiTalker.updateLockState(VehicleState.INSTANCE.getVehicleId(), SpicyApiTalker.FRONT_RIGHT, true, this::onUnlockFrontRight));
         FRightL = findViewById(R.id.FRightLock);
-        FRightL.setOnClickListener(this);
+        FRightL.setOnClickListener(c -> SpicyApiTalker.updateLockState(VehicleState.INSTANCE.getVehicleId(), SpicyApiTalker.FRONT_RIGHT, false, this::onLockFrontRight));
         BLeftU = findViewById(R.id.BLeftUnlock);
-        BLeftU.setOnClickListener(this);
+        BLeftU.setOnClickListener(c -> SpicyApiTalker.updateLockState(VehicleState.INSTANCE.getVehicleId(), SpicyApiTalker.REAR_LEFT, true, this::onUnlockRearLeft));
         BLeftL = findViewById(R.id.BLeftLock);
-        BLeftL.setOnClickListener(this);
+        BLeftL.setOnClickListener(c -> SpicyApiTalker.updateLockState(VehicleState.INSTANCE.getVehicleId(), SpicyApiTalker.REAR_LEFT, false, this::onLockRearLeft));
         BRightU = findViewById(R.id.BRightUnlock);
-        BRightU.setOnClickListener(this);
+        BRightU.setOnClickListener(c -> SpicyApiTalker.updateLockState(VehicleState.INSTANCE.getVehicleId(), SpicyApiTalker.REAR_RIGHT, true, this::onUnlockRearRight));
         BRightL = findViewById(R.id.BRightLock);
-        BRightL.setOnClickListener(this);
+        BRightL.setOnClickListener(c -> SpicyApiTalker.updateLockState(VehicleState.INSTANCE.getVehicleId(), SpicyApiTalker.REAR_RIGHT, false, this::onLockRearRight));
 
         //Set the function to be called when the state of the locks updates
         VehicleState.setLockUpdatedFunc(this::onStateChanged);
+        //Set the states when it opens
+        onStateChanged(VehicleState.INSTANCE.getFrontLeftLocked(), VehicleState.INSTANCE.getFrontRightLocked(), VehicleState.INSTANCE.getRearLeftLocked(), VehicleState.INSTANCE.getRearRightLocked());
     }
 
     @Override
@@ -48,62 +48,6 @@ public class LockerActivity extends AppCompatActivity implements View.OnClickLis
         //Clear the updated function because this screen will no longer be open, so we won't need to monitor for updates to the locks.
         VehicleState.setLockUpdatedFunc(null);
         super.onDestroy();
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch(v.getId()){
-            case R.id.FLeftUnlock:
-                SpicyApiTalker.updateLockState(VehicleState.INSTANCE.getVehicleId(), true, this::onUnlock);
-                break;
-
-            case R.id.FLeftLock:
-                SpicyApiTalker.updateLockState(VehicleState.INSTANCE.getVehicleId(), false, this::onLock);
-                break;
-
-            case R.id.FRightUnlock:
-                FRightL.setVisibility(View.VISIBLE);
-                FRightU.setVisibility(View.INVISIBLE);
-                FRightL.setEnabled(true);
-                FRightU.setEnabled(false);
-                break;
-
-            case R.id.FRightLock:
-                FRightU.setVisibility(View.VISIBLE);
-                FRightL.setVisibility(View.INVISIBLE);
-                FRightU.setEnabled(true);
-                FRightL.setEnabled(false);
-                break;
-
-            case R.id.BLeftUnlock:
-                BLeftL.setVisibility(View.VISIBLE);
-                BLeftU.setVisibility(View.INVISIBLE);
-                BLeftL.setEnabled(true);
-                BLeftU.setEnabled(false);
-                break;
-
-            case R.id.BLeftLock:
-                BLeftU.setVisibility(View.VISIBLE);
-                BLeftL.setVisibility(View.INVISIBLE);
-                BLeftU.setEnabled(true);
-                BLeftL.setEnabled(false);
-                break;
-
-            case R.id.BRightUnlock:
-                BRightL.setVisibility(View.VISIBLE);
-                BRightU.setVisibility(View.INVISIBLE);
-                BRightL.setEnabled(true);
-                BRightU.setEnabled(false);
-                break;
-
-            case R.id.BRightLock:
-                BRightU.setVisibility((View.VISIBLE));
-                BRightL.setVisibility(View.INVISIBLE);
-                BRightU.setEnabled(true);
-                BRightL.setEnabled(false);
-                break;
-
-        }
     }
     
     public Unit onStateChanged(boolean frontLeftLocked, boolean frontRightLocked, boolean rearLeftLocked, boolean rearRightLocked) {
@@ -131,16 +75,58 @@ public class LockerActivity extends AppCompatActivity implements View.OnClickLis
         return null;
     }
 
-    public Unit onUnlock(APIResponse<Boolean> response) {
+    public Unit onUnlockFrontLeft(APIResponse<Boolean> response) {
         if(response.getSuccess() && response.getResponse()) {
-            VehicleState.updateLocks(false, true, true, true);
+            VehicleState.updateLocks(false, VehicleState.INSTANCE.getFrontRightLocked(), VehicleState.INSTANCE.getRearLeftLocked(), VehicleState.INSTANCE.getRearRightLocked());
         }
         return null;
     }
 
-    public Unit onLock(APIResponse<Boolean> response) {
+    public Unit onLockFrontLeft(APIResponse<Boolean> response) {
         if(response.getSuccess() && response.getResponse()) {
-            VehicleState.updateLocks(true, true, true, true);
+            VehicleState.updateLocks(true, VehicleState.INSTANCE.getFrontRightLocked(), VehicleState.INSTANCE.getRearLeftLocked(), VehicleState.INSTANCE.getRearRightLocked());
+        }
+        return null;
+    }
+
+    public Unit onUnlockFrontRight(APIResponse<Boolean> response) {
+        if(response.getSuccess() && response.getResponse()) {
+            VehicleState.updateLocks(VehicleState.INSTANCE.getFrontLeftLocked(), false, VehicleState.INSTANCE.getRearLeftLocked(), VehicleState.INSTANCE.getRearRightLocked());
+        }
+        return null;
+    }
+
+    public Unit onLockFrontRight(APIResponse<Boolean> response) {
+        if(response.getSuccess() && response.getResponse()) {
+            VehicleState.updateLocks(VehicleState.INSTANCE.getFrontLeftLocked(), true, VehicleState.INSTANCE.getRearLeftLocked(), VehicleState.INSTANCE.getRearRightLocked());
+        }
+        return null;
+    }
+
+    public Unit onUnlockRearLeft(APIResponse<Boolean> response) {
+        if(response.getSuccess() && response.getResponse()) {
+            VehicleState.updateLocks(VehicleState.INSTANCE.getFrontLeftLocked(), VehicleState.INSTANCE.getFrontRightLocked(), false, VehicleState.INSTANCE.getRearRightLocked());
+        }
+        return null;
+    }
+
+    public Unit onLockRearLeft(APIResponse<Boolean> response) {
+        if(response.getSuccess() && response.getResponse()) {
+            VehicleState.updateLocks(VehicleState.INSTANCE.getFrontLeftLocked(), VehicleState.INSTANCE.getFrontRightLocked(), true, VehicleState.INSTANCE.getRearRightLocked());
+        }
+        return null;
+    }
+
+    public Unit onUnlockRearRight(APIResponse<Boolean> response) {
+        if(response.getSuccess() && response.getResponse()) {
+            VehicleState.updateLocks(VehicleState.INSTANCE.getFrontLeftLocked(), VehicleState.INSTANCE.getFrontRightLocked(), VehicleState.INSTANCE.getRearLeftLocked(), false);
+        }
+        return null;
+    }
+
+    public Unit onLockRearRight(APIResponse<Boolean> response) {
+        if(response.getSuccess() && response.getResponse()) {
+            VehicleState.updateLocks(VehicleState.INSTANCE.getFrontLeftLocked(), VehicleState.INSTANCE.getFrontRightLocked(), VehicleState.INSTANCE.getRearLeftLocked(), true);
         }
         return null;
     }

@@ -2,79 +2,81 @@ package spicyglass.client.ui.screens;
 
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import kotlin.Unit;
 import spicyglass.client.R;
+import spicyglass.client.integration.external.APIResponse;
+import spicyglass.client.integration.external.SpicyApiTalker;
+import spicyglass.client.model.VehicleState;
 
-public class SeatActivity extends AppCompatActivity implements View.OnClickListener {
+public class SeatActivity extends AppCompatActivity {
     ImageButton FLeft, FRight, BLeft, BRight;
-    int FLeftState=1;
-    int FRightState=1;
-    int BLeftState=1;
-    int BRightState=1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.seat_page);
 
-        FLeft = (ImageButton) findViewById(R.id.FLeft);
-        FLeft.setOnClickListener(this);
-        FRight = (ImageButton) findViewById(R.id.FRight);
-        FRight.setOnClickListener(this);
-        BLeft = (ImageButton) findViewById(R.id.BLeft);
-        BLeft.setOnClickListener(this);
-        BRight = (ImageButton) findViewById(R.id.BRight);
-        BRight.setOnClickListener(this);
+        FLeft = findViewById(R.id.FLeft);
+        FLeft.setOnClickListener(c -> SpicyApiTalker.updateSeatHeaterState(VehicleState.INSTANCE.getVehicleId(), SpicyApiTalker.FRONT_LEFT, !VehicleState.INSTANCE.getFrontLeftSeatHeating(), this::onFrontLeftToggled));
+        FRight = findViewById(R.id.FRight);
+        FRight.setOnClickListener(c -> SpicyApiTalker.updateSeatHeaterState(VehicleState.INSTANCE.getVehicleId(), SpicyApiTalker.FRONT_RIGHT, !VehicleState.INSTANCE.getFrontRightSeatHeating(), this::onFrontRightToggled));
+        BLeft = findViewById(R.id.BLeft);
+        BLeft.setOnClickListener(c -> SpicyApiTalker.updateSeatHeaterState(VehicleState.INSTANCE.getVehicleId(), SpicyApiTalker.REAR_LEFT, !VehicleState.INSTANCE.getRearLeftSeatHeating(), this::onRearLeftToggled));
+        BRight = findViewById(R.id.BRight);
+        BRight.setOnClickListener(c -> SpicyApiTalker.updateSeatHeaterState(VehicleState.INSTANCE.getVehicleId(), SpicyApiTalker.REAR_RIGHT, !VehicleState.INSTANCE.getRearRightSeatHeating(), this::onRearRightToggled));
+
+        //Set the function to be called when the state of the seat heaters updates
+        VehicleState.setSeatHeatingUpdatedFunc(this::onStateChanged);
+        //Set the states when it opens
+        onStateChanged(VehicleState.INSTANCE.getFrontLeftSeatHeating(), VehicleState.INSTANCE.getFrontRightSeatHeating(), VehicleState.INSTANCE.getRearLeftSeatHeating(), VehicleState.INSTANCE.getRearRightSeatHeating());
     }
 
     @Override
-    public void onClick(View v) {
-        switch(v.getId()){
-            case R.id.FLeft:
-                FLeftState++;
-                if (FLeftState % 2 == 0) {
-                    FLeft.setColorFilter(getResources().getColor(R.color.Red), PorterDuff.Mode.SRC_IN);
-                }
-                else{
-                    FLeft.setColorFilter(getResources().getColor(R.color.Black), PorterDuff.Mode.SRC_IN);
-                }
-                break;
+    protected void onDestroy() {
+        //Clear the updated function because this screen will no longer be open, so we won't need to monitor for updates to the seat heaters.
+        VehicleState.setSeatHeatingUpdatedFunc(null);
+        super.onDestroy();
+    }
 
-            case R.id.FRight:
-                FRightState++;
-                if (FRightState % 2 == 0) {
-                    FRight.setColorFilter(getResources().getColor(R.color.Red), PorterDuff.Mode.SRC_IN);
-                }
-                else{
-                    FRight.setColorFilter(getResources().getColor(R.color.Black), PorterDuff.Mode.SRC_IN);
-                }
-                break;
+    public Unit onStateChanged(boolean frontLeftSeatHeating, boolean frontRightSeatHeating, boolean rearLeftSeatHeating, boolean rearRightSeatHeating) {
+        this.runOnUiThread(() -> {
+            FLeft.setColorFilter(getResources().getColor(frontLeftSeatHeating ? R.color.Red : R.color.Black, null), PorterDuff.Mode.SRC_IN);
+            FRight.setColorFilter(getResources().getColor(frontRightSeatHeating ? R.color.Red : R.color.Black, null), PorterDuff.Mode.SRC_IN);
+            BLeft.setColorFilter(getResources().getColor(rearLeftSeatHeating ? R.color.Red : R.color.Black, null), PorterDuff.Mode.SRC_IN);
+            BRight.setColorFilter(getResources().getColor(rearRightSeatHeating ? R.color.Red : R.color.Black, null), PorterDuff.Mode.SRC_IN);
+        });
+        return null;
+    }
 
-            case R.id.BLeft:
-                BLeftState++;
-                if (BLeftState % 2 == 0) {
-                    BLeft.setColorFilter(getResources().getColor(R.color.Red), PorterDuff.Mode.SRC_IN);
-                }
-                else{
-                    BLeft.setColorFilter(getResources().getColor(R.color.Black), PorterDuff.Mode.SRC_IN);
-                }
-                break;
-
-            case R.id.BRight:
-                BRightState++;
-                if (BRightState % 2 == 0) {
-                    BRight.setColorFilter(getResources().getColor(R.color.Red), PorterDuff.Mode.SRC_IN);
-                }
-                else{
-                    BRight.setColorFilter(getResources().getColor(R.color.Black), PorterDuff.Mode.SRC_IN);
-                }
-                break;
-
+    public Unit onFrontLeftToggled(APIResponse<Boolean> response) {
+        if(response.getSuccess() && response.getResponse()) {
+            VehicleState.updateSeatHeaters(!VehicleState.INSTANCE.getFrontLeftSeatHeating(), VehicleState.INSTANCE.getFrontRightSeatHeating(), VehicleState.INSTANCE.getRearLeftSeatHeating(), VehicleState.INSTANCE.getRearRightSeatHeating());
         }
+        return null;
+    }
 
+    public Unit onFrontRightToggled(APIResponse<Boolean> response) {
+        if(response.getSuccess() && response.getResponse()) {
+            VehicleState.updateSeatHeaters(VehicleState.INSTANCE.getFrontLeftSeatHeating(), !VehicleState.INSTANCE.getFrontRightSeatHeating(), VehicleState.INSTANCE.getRearLeftSeatHeating(), VehicleState.INSTANCE.getRearRightSeatHeating());
+        }
+        return null;
+    }
+
+    public Unit onRearLeftToggled(APIResponse<Boolean> response) {
+        if(response.getSuccess() && response.getResponse()) {
+            VehicleState.updateSeatHeaters(VehicleState.INSTANCE.getFrontLeftSeatHeating(), VehicleState.INSTANCE.getFrontRightSeatHeating(), !VehicleState.INSTANCE.getRearLeftSeatHeating(), VehicleState.INSTANCE.getRearRightSeatHeating());
+        }
+        return null;
+    }
+
+    public Unit onRearRightToggled(APIResponse<Boolean> response) {
+        if(response.getSuccess() && response.getResponse()) {
+            VehicleState.updateSeatHeaters(VehicleState.INSTANCE.getFrontLeftSeatHeating(), VehicleState.INSTANCE.getFrontRightSeatHeating(), VehicleState.INSTANCE.getRearLeftSeatHeating(), !VehicleState.INSTANCE.getRearRightSeatHeating());
+        }
+        return null;
     }
 }
