@@ -86,7 +86,8 @@ public class WeatherHandler {
             windSpeedConversion = Double.parseDouble(windSpeed);
 
             double temperatureConversiontoF;
-            temperatureConversiontoF = (temperatureConversion * (9/5)) + 32; //converts to degrees fahrenheit
+            temperatureConversiontoF = Math.round(temperatureConversion * (9/5)) + 32; //converts to degrees fahrenheit
+
 
             double windSpeedConversiontoMPH;
             windSpeedConversiontoMPH = (windSpeedConversion *  2.2369); //converts from M/Sec to MPH
