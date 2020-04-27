@@ -28,12 +28,12 @@ public final class PubSubSubscriber {
         MessageReceiver receiver =
                 (message, consumer) -> {
                     // handle incoming message, then ack/nack the received message
+                    SGLogger.info("Subscriber received data!");
                     SGLogger.info("Id : " + message.getMessageId());
                     SGLogger.info("Data : " + message.getData().toStringUtf8());
                     try {
                         JSONObject object = new JSONObject(message.getData().toStringUtf8());
-                        //TODO update other aspects of the vehicle state here
-                        VehicleState.updateLocks(object.getBoolean("carLock"), true, true, true);
+                        VehicleState.INSTANCE.onStatesRetrieved(new APIResponse<>(object, 200, true, null));
                     } catch(JSONException e) {
                         e.printStackTrace();
                     }

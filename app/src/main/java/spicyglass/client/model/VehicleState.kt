@@ -142,10 +142,11 @@ object VehicleState {
         SpicyApiTalker.getVehicleState(vehicleId, this::onStatesRetrieved)
     }
 
-    private fun onStatesRetrieved(resp: APIResponse<JSONObject?>) {
+    fun onStatesRetrieved(resp: APIResponse<JSONObject?>) {
         if(resp.success && resp.response != null) {
             val json = resp.response!!.getJSONObject("states")
-            //SGLogger.info(json.toString())
+            SGLogger.info("States were retrieved!")
+            SGLogger.info(json.toString())
             //TODO update this with the rest of the data from the json as it gets implemented
             val carLockObj = json.getJSONObject("carLock")
             updateLocks(carLockObj.getBoolean(SpicyApiTalker.FRONT_LEFT), carLockObj.getBoolean(SpicyApiTalker.FRONT_RIGHT), carLockObj.getBoolean(SpicyApiTalker.REAR_LEFT), carLockObj.getBoolean(SpicyApiTalker.REAR_RIGHT))
