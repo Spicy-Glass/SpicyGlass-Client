@@ -108,7 +108,7 @@ public class WeatherHandler {
 
 
             String resultText = "Description: " + description
-                    + "\nTemperature: " + temperatureConversiontoF + "°F"
+                    + "\nTemperature: " + df.format(temperatureConversiontoF) + "°F"
                     + "\nWind Speeds: " + df.format(windSpeedConversiontoMPH) + " MPH"
                     + "\nLocation: " + location
                     + prompt;
