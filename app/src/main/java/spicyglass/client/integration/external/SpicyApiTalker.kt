@@ -20,6 +20,7 @@ import java.net.URL
 object SpicyApiTalker {
     private const val apiUrl = "https://deployment-test-5tfsskgkda-uc.a.run.app/"
     //POST requests
+    private const val GET_FULL_DB = "get_full_database"
     //Takes token
     private const val LOGOUT = "revoke_token"
     //Takes token
@@ -41,7 +42,7 @@ object SpicyApiTalker {
         var success = false
         var errorMessage: String? = null
         val con = URL(apiUrl + endpoint).openConnection() as HttpURLConnection
-        con.requestMethod = "POST"
+        con.requestMethod = if(endpoint == GET_FULL_DB) "GET" else "POST"
         con.setRequestProperty("Content-Type", "application/json; utf-8")
         con.setRequestProperty("Accept", "application/json")
         if(keyValuePostArgs.isNotEmpty()) {
@@ -81,6 +82,13 @@ object SpicyApiTalker {
             }
         }
         return APIResponse(ret, responseCode, success, errorMessage)
+    }
+
+    @JvmStatic
+    fun getFullDB(callbackFunc: (response: APIResponse<JSONObject?>) -> Unit) {
+        Thread(Runnable{
+            callbackFunc.invoke(makeRequest(GET_FULL_DB))
+        }).start()
     }
 
     @JvmStatic
