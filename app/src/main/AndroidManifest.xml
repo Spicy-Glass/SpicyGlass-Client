@@ -29,6 +29,7 @@
         <activity android:name=".ui.screens.SettingActivity"/>
         <activity android:name=".ui.screens.DiagnosisActivity"/>
         <activity android:name=".ui.screens.DefrostActivity"/>
+        <activity android:name=".ui.screens.DefrostScheduler"/>
         <activity android:name=".ui.screens.SeatActivity"/>
         <activity android:name=".ui.screens.LockerActivity"/>
         <activity android:name=".ui.screens.AutoStartActivity"/>
