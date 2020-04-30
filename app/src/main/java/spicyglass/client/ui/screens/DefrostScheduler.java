@@ -48,7 +48,12 @@ public class DefrostScheduler extends AppCompatActivity implements View.OnClickL
             ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_CALENDAR}, 100);
     }
 
-
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if(requestCode == 100) {
+            //TODO Do stuff if needed
+        }
+    }
 
     public void addRow(String jess) {
         myrow = new TableRow(this);
