@@ -26,13 +26,13 @@
 
     <TableLayout
         android:id="@+id/CalTable"
-        android:layout_width="412dp"
-        android:layout_height="476dp"
+        android:layout_width="410dp"
+        android:layout_height="473dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
-        tools:layout_editor_absoluteX="1dp"
-        tools:ignore="MissingConstraints">
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="1dp">
 
         <TableRow
             android:layout_width="match_parent"
@@ -40,26 +40,38 @@
 
             <Button
                 android:id="@+id/addcalbut"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="321dp"
+                android:layout_height="match_parent"
                 android:text="Add" />
 
-            <Button
-                android:id="@+id/deletecalbut"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Delete" />
-
         </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
     </TableLayout>
+
+    <Button
+        android:id="@+id/deletecalbut"
+        android:layout_width="123dp"
+        android:layout_height="52dp"
+        android:layout_marginTop="200dp"
+        android:layout_marginBottom="6dp"
+        android:text="Delete"
+        app:layout_constraintBottom_toTopOf="@+id/CalTable"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.003"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="280dp"
+        android:layout_height="53dp"
+        android:layout_marginTop="84dp"
+        android:layout_marginBottom="4dp"
+        android:text="For delete: check of corressponding box"
+        app:layout_constraintBottom_toTopOf="@+id/CalTable"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/calhand_head" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
