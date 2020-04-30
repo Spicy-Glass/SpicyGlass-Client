@@ -1,7 +1,9 @@
 package spicyglass.client;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.widget.Button;
@@ -9,6 +11,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import java.util.Date;
 
@@ -40,6 +44,10 @@ public class LoginActivity extends AppCompatActivity {
             VehicleState.INSTANCE.setToken(token);
             SpicyApiTalker.checkToken(token, this::validatedToken);
         }
+
+        //TODO TEMPORARY Request permission before testing calendar stuff
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED)
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_CALENDAR, Manifest.permission.READ_CALENDAR}, 100);
 
         login.setOnClickListener(v -> {
             //within the on click if login info is correct then you apply these if not give error msg
