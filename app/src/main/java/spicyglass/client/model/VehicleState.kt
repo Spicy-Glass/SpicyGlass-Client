@@ -144,7 +144,7 @@ object VehicleState {
 
     fun onStatesRetrieved(resp: APIResponse<JSONObject?>) {
         if(resp.success && resp.response != null) {
-            val json = if(resp.response!!.has("states")) resp.response!!.getJSONObject("states") else resp.response!!
+            val json = resp.response!!.getJSONObject("states")
             SGLogger.info("States were retrieved!")
             SGLogger.info(json.toString())
             //TODO update this with the rest of the data from the json as it gets implemented

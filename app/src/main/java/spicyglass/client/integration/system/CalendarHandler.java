@@ -77,9 +77,9 @@ public class CalendarHandler {
                 if(cursor.getString(1).equals("Defrost"))
                     values.add(new Pair<>((cursor.getInt(0)), (new Date(cursor.getLong(3)))));
                 //Toast.makeText( activity.getApplicationContext(), "Title: "
-                  //      + cursor.getString(1)
-                    //    + " Start-Time: "
-                      //  + (new Date(cursor.getLong(3))).toString(), Toast.LENGTH_LONG ).show();
+                //      + cursor.getString(1)
+                //    + " Start-Time: "
+                //  + (new Date(cursor.getLong(3))).toString(), Toast.LENGTH_LONG ).show();
             } while ( cursor.moveToNext());
         }
         if (cursor != null)
@@ -93,7 +93,6 @@ public class CalendarHandler {
         if (ContextCompat.checkSelfPermission(activity,
                 Manifest.permission.READ_CONTACTS)
                 != PackageManager.PERMISSION_GRANTED) {
-
             // Permission is not granted
             // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(activity,
@@ -106,7 +105,6 @@ public class CalendarHandler {
                 ActivityCompat.requestPermissions(activity,
                         new String[]{Manifest.permission.READ_CONTACTS},
                         MY_PERMISSIONS_REQUEST_READ_CONTACTS);
-
                 // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
                 // app-defined int constant. The callback method gets the
                 // result of the request.
