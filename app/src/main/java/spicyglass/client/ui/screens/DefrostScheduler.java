@@ -19,6 +19,7 @@ import android.widget.TimePicker;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import spicyglass.client.R;
 
@@ -44,8 +45,8 @@ public class DefrostScheduler extends AppCompatActivity implements View.OnClickL
 
         add.setOnClickListener(this);
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED)
-            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_CALENDAR}, 100);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED)
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_CALENDAR, Manifest.permission.READ_CALENDAR}, 100);
     }
 
     @Override

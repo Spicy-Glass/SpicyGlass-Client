@@ -15,6 +15,7 @@ import android.provider.CalendarContract;
 import android.util.Pair;
 
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -56,7 +57,7 @@ public class CalendarHandler {
                 + " ) AND ( " + CalendarContract.Events.DTSTART
                 + " <= " + endTime.getTimeInMillis() + " ))";
 
-        if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(activity, new String[] {Manifest.permission.WRITE_CALENDAR}, 100);
         }
         Cursor cursor = activity.getBaseContext().getContentResolver().query(CalendarContract.Events.CONTENT_URI, projection, selection, null, null);
