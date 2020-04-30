@@ -51,6 +51,13 @@ public class DefrostActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if(requestCode == 100) {
+            //TODO Do stuff if needed
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         //Clear the updated function because this screen will no longer be open, so we won't need to monitor for updates to the defrost.
         VehicleState.setDefrostUpdatedFunc(null);

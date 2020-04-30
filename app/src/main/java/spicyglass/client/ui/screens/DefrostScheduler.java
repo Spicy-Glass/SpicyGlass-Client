@@ -1,8 +1,10 @@
 package spicyglass.client.ui.screens;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +18,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import spicyglass.client.R;
 
@@ -41,7 +44,8 @@ public class DefrostScheduler extends AppCompatActivity implements View.OnClickL
 
         add.setOnClickListener(this);
 
-
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED)
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_CALENDAR}, 100);
     }
 
 
