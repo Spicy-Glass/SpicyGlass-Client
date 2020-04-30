@@ -60,11 +60,16 @@ public class CalendarHandler {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
-            ActivityCompat.requestPermissions(activity, new String[] {Manifest.permission.READ_CALENDAR}, 100);
+            ActivityCompat.requestPermissions(activity, new String[] {Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR}, 100);
             //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
+        }
+
+        //TEMPORARY workaround for not having write calendar permission
+        if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(activity, new String[] {Manifest.permission.WRITE_CALENDAR}, 100);
         }
         Cursor cursor = activity.getBaseContext().getContentResolver().query(CalendarContract.Events.CONTENT_URI, projection, selection, null, null);
 
