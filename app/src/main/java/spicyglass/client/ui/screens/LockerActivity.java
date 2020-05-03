@@ -21,21 +21,21 @@ public class LockerActivity extends AppCompatActivity {
         setContentView(R.layout.locker_page);
 
         FLeftU = findViewById(R.id.FLeftUnlock);
-        FLeftU.setOnClickListener(c -> SpicyApiTalker.updateLockState(VehicleState.INSTANCE.getVehicleId(), SpicyApiTalker.FRONT_LEFT, true, this::onUnlockFrontLeft));
+        FLeftU.setOnClickListener(c -> SpicyApiTalker.updateLockState(VehicleState.INSTANCE.getVehicleId(), SpicyApiTalker.FRONT_LEFT, true, this::onLockFrontLeft));
         FLeftL = findViewById(R.id.FLeftLock);
-        FLeftL.setOnClickListener(c -> SpicyApiTalker.updateLockState(VehicleState.INSTANCE.getVehicleId(), SpicyApiTalker.FRONT_LEFT, false, this::onLockFrontLeft));
+        FLeftL.setOnClickListener(c -> SpicyApiTalker.updateLockState(VehicleState.INSTANCE.getVehicleId(), SpicyApiTalker.FRONT_LEFT, false, this::onUnlockFrontLeft));
         FRightU = findViewById(R.id.FRightUnlock);
-        FRightU.setOnClickListener(c -> SpicyApiTalker.updateLockState(VehicleState.INSTANCE.getVehicleId(), SpicyApiTalker.FRONT_RIGHT, true, this::onUnlockFrontRight));
+        FRightU.setOnClickListener(c -> SpicyApiTalker.updateLockState(VehicleState.INSTANCE.getVehicleId(), SpicyApiTalker.FRONT_RIGHT, true, this::onLockFrontRight));
         FRightL = findViewById(R.id.FRightLock);
-        FRightL.setOnClickListener(c -> SpicyApiTalker.updateLockState(VehicleState.INSTANCE.getVehicleId(), SpicyApiTalker.FRONT_RIGHT, false, this::onLockFrontRight));
+        FRightL.setOnClickListener(c -> SpicyApiTalker.updateLockState(VehicleState.INSTANCE.getVehicleId(), SpicyApiTalker.FRONT_RIGHT, false, this::onUnlockFrontRight));
         BLeftU = findViewById(R.id.BLeftUnlock);
-        BLeftU.setOnClickListener(c -> SpicyApiTalker.updateLockState(VehicleState.INSTANCE.getVehicleId(), SpicyApiTalker.REAR_LEFT, true, this::onUnlockRearLeft));
+        BLeftU.setOnClickListener(c -> SpicyApiTalker.updateLockState(VehicleState.INSTANCE.getVehicleId(), SpicyApiTalker.REAR_LEFT, true, this::onLockRearLeft));
         BLeftL = findViewById(R.id.BLeftLock);
-        BLeftL.setOnClickListener(c -> SpicyApiTalker.updateLockState(VehicleState.INSTANCE.getVehicleId(), SpicyApiTalker.REAR_LEFT, false, this::onLockRearLeft));
+        BLeftL.setOnClickListener(c -> SpicyApiTalker.updateLockState(VehicleState.INSTANCE.getVehicleId(), SpicyApiTalker.REAR_LEFT, false, this::onUnlockRearLeft));
         BRightU = findViewById(R.id.BRightUnlock);
-        BRightU.setOnClickListener(c -> SpicyApiTalker.updateLockState(VehicleState.INSTANCE.getVehicleId(), SpicyApiTalker.REAR_RIGHT, true, this::onUnlockRearRight));
+        BRightU.setOnClickListener(c -> SpicyApiTalker.updateLockState(VehicleState.INSTANCE.getVehicleId(), SpicyApiTalker.REAR_RIGHT, true, this::onLockRearRight));
         BRightL = findViewById(R.id.BRightLock);
-        BRightL.setOnClickListener(c -> SpicyApiTalker.updateLockState(VehicleState.INSTANCE.getVehicleId(), SpicyApiTalker.REAR_RIGHT, false, this::onLockRearRight));
+        BRightL.setOnClickListener(c -> SpicyApiTalker.updateLockState(VehicleState.INSTANCE.getVehicleId(), SpicyApiTalker.REAR_RIGHT, false, this::onUnlockRearRight));
 
         //Set the function to be called when the state of the locks updates
         VehicleState.setLockUpdatedFunc(this::onStateChanged);
