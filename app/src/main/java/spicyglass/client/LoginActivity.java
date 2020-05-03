@@ -83,8 +83,6 @@ public class LoginActivity extends AppCompatActivity {
                         .putString("token", response.getResponse())
                         .apply();
                 VehicleState.INSTANCE.setToken(response.getResponse());
-                //Start the Subscriber on a new thread, DO NOT do it on the main thread
-                new Thread(() -> PubSubSubscriber.init(LoginActivity.this)).start();
                 switchToMainActivity();
             } else {
                 Toast.makeText(getApplicationContext(), response.getErrorMessage(), Toast.LENGTH_LONG).show();
@@ -96,6 +94,8 @@ public class LoginActivity extends AppCompatActivity {
     public void switchToMainActivity(){
         //Start the state retrieval before we switch to the main screen. This doesn't necessarily mean it'll finish before the switch happens.
         VehicleState.getStates();
+        //Start the Subscriber on a new thread, DO NOT do it on the main thread
+        new Thread(() -> PubSubSubscriber.init(LoginActivity.this)).start();
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
         finish();
